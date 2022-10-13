@@ -1,0 +1,2301 @@
+---
+title: "R Skript"
+author: "Julia Lück-Benz (j.lueck-benz@fu-berlin.de)"
+date: 'Stand: 13. Oktober 2022'
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    number_sections: yes
+  html_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 2
+    toc_float: yes
+    collapsed: no
+    smooth_scroll: no
+subtitle: Einführung in die Datenanalyse mit R
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, tidy.opts=list(width.cutoff=80), tidy=TRUE)
+```
+
+
+\newpage
+# Einführung
+
+Liebe Studierende, 
+bei dem Ihnen hier vorliegenden Dokument handelt es sich um das Skript zur Methodenübung "Datenanalyse in R" am Institut für Publizistik- und Kommunikationswissenschaft. Die Veranstaltung wird sowohl auf Bachelor- als auch auf Masterniveau abgehalten. Das Skript ist für beide Zielgruppen gleich, allerdings werden im Bachelor nicht alle Aspekte behandelt.  
+
+Das Skript soll Ihnen als Unterstützung beim Erlernen des Umgangs mit R dienen. Es gilt als Ergänzung zu den Lehrveranstaltungen und Online Tutorials, wobei diese im Skript nicht eins zu eins abgebildet werden (und auch nicht immer in der selben Reihenfolge behandelt). Schauen Sie sich immer auch den Code zu den Videos und zum Input der Präsenzsitzungen an.  
+
+Wie bei vielen Dingen im Leben gilt auch beim Lernen von R: **Selbermachen macht schlau!** Üben Sie so viel wie möglich. Machen Sie die vorgegebenen Übungen und trauen Sie sich auch eigene Versuche (z.B. mit selbst recherchierten Daten) zu unternehmen. 
+
+So wie das OpenSource Programm R ist auch dieses Skript nicht in Stein gemeißelt, sondern entwickelt sich jedes Semester weiter. Nicht alle Stellen sind perfekt formuliert. Hin und wieder wird sich sicher mal ein Rechtschreib- oder Kommafehler eingeschlichen haben. Sehen Sie dies nach. Wenn Sie zum Beispiel kurz vor Ihrem Abschluss beim Verfassen Ihrer Abschlussarbeit eine aktualisierte Version haben möchten, scheuen Sie nicht, mich anzusprechen. 
+
+## Allgemeine Hinweise
+
+R...
+
+... ist nicht einfach eine Statistik-Software, sondern eine Programmiersprache
+
+... ist kostenlos (Open Source) für alle Betriebssysteme
+
+... bietet Tausende von Paketen für alle Arten von Analysen
+
+... erlaubt eine flexible Anpassung an spezifische Problemstellungen
+
+... ermöglicht unzählige Möglichkeiten der Visualisierung und Dokumentenaufbereitung
+
+## Installation
+
+R ist eine Programmiersprache. Die eigentliche Software, mit der wir im Kurs arbeiten, ist RStudio. Beides - sowohl die Programmiersprache als auch die Software - müssen auf der Website www.rstudio.com  heruntergeladen werden:
+
+[Download RStudio](https://www.rstudio.com/products/rstudio/download/)  
+
+Achten Sie dabei darauf, die richtige Version für Ihr Betriebssystem auszuwählen. Installieren Sie zuerst die Programmiersprache R und dann das Arbeitsumfeld RStudio.
+
+## RStudio Oberfläche
+
+![R Umgebung](R Umgebung.png)
+
+
+- **Source (Syntax)** 
+-- Text-Editor für Skriptdateien  
+-- Eingabe mehrerer Codezeilen auf einmal  
+-- Ausführen über STRG bzw. cmd und Enter bzw. Schaltfläche „Run"  
+-- Speicherung des Codes  
+
+
+- **Console**  
+-- Output: Darstellung der Ergebnisse  
+-- Eingabe von Code der nicht dauerhaft gespeichert wird  
+-- Jede eingegebene Zeile wird mit „Enter" ausgeführt
+
+- **Environment**  
+-- Ablage von Variablen  
+-- Historie der bisherigen Anweisungen
+
+- **Files, Plots, Packages und Help**  
+-- Files: Dateien und Verzeichnisse auf dem Computer (in der Regel würde hier der Projektordner offen bleiben zur schnellen Orientierung)  
+-- Plots: Anzeige von erstellten Grafiken und Diagrammen  
+-- Packages: Liste aller installierten Packages (abgeschlossene Sammlung von Funktionen und Daten, die den Funktionsumfang von R erweitern)  
+-- Help: R-Hilfeseiten  
+-- Viewer: Vorschau verschiedener fortgeschrittener Ansichten (z.B. Webseiten oder Präsentationen), die sich mit R und den entsprechenden Zusatzpaketen erstellen lassen
+
+Eingabe in die Console -- durch Enter wird die Operation direkt ausgeführt und das Ergebnis angezeigt
+
+```{r}
+5+6
+```
+
+Eingabe von Funktionen (auf Klammern und Anführungszeichen achten!) -- Befehle zur Ausführung (dahinter stehen dann zum Beispiel Formeln zur Berechnung)
+
+```{r Ausgabefunktion print}
+print("Hallo Welt")
+
+```
+
+\newpage
+# R Basics
+
+## Ein Projekt anlegen und ein Working Directory festlegen
+
+Bei der Arbeit mit R bewegt man sich in einem selbst angelegten Projekt als in sich abgeschlossene Einheit. Dem Projekt wird ein Arbeitsverzeichnis/ Working Directory (ein Ordner auf Ihrem Computer) zugewiesen. In diesem Verzeichnis werden alle Dateien gesammelt, die für das Projekt benötigt werden. Es bietet sich an, dass Sie sich ein Projektverzeichnis für den Kurs anlegen und dort alle Kursdateien speichern. Dies ermöglicht das einfachere Zurechtfinden und Verwalten der eigenen Arbeit. Sie brauchen dann beispielsweise beim Laden von Datensätzen keine langen Dateipfade eingeben, wenn Sie den Datensatz vorher in Ihrem Working Directory abgelegt haben.   
+
+Bei der Anlage eines Projektes wird das Arbeitsverzeichnis festgelegt. Speichern Sie das Projekts über die Menüleiste:
+
+**File - New Project - New Directory**
+
+Benennen Sie Ihr Projekt und legen einen Ordner fest. Das Management Ihrer Ordnerstruktur erfolgt im Reiter „Files".  Alles, was an Dateien erstellt wird, wird in diesem Verzeichnis abgelegt.
+
+![Projektordner anlegen](Projektordner anlegen.png)
+Das Working Directory kann sowohl über die Menüführung als auch per Code gesetzt werden. Hier zwei Beispiele für Windows und MacOS. Beachten Sie die Verwendung vom Slash-Zeichen bei MacOS und Backslash  bei Windows.
+
+```{r Working Directory, eval=FALSE, echo=TRUE}
+# Windows 
+setwd("C:\Documents\R Workshop") 
+
+# macOS
+setwd("~/Documents/R Workshop") 
+```
+
+Hat man vergessen, wo man das Working Directory abgespeichert hat, hilft die Ausführung des Befehls **getwd()** - ohne weitere Spezifizierung in den Klammern.  
+
+## Einfache Rechenoperationen
+
+Wirklich sehr basic: R kann rechnen. 
+
+```{r Einfache Rechenoperationen, echo=TRUE}
+1 + 3 # Addition
+7 - 5 # Substraktion
+2 * 6 # Multiplikation
+4 / 3 # Division
+2^3   # Potenzieren
+2^0.5 # Wurzel ziehen
+pi # Pi aufrufen
+```
+
+
+## Objekte anlegen
+
+Die Zuweisung eines Wertes zu einem Objekt erfolgt über "<-" und wird im Environment gespreichert. 
+
+```{r}
+a <- 2
+b <- 3
+```
+
+*(Hinweis: Manchmal sieht man auch die Verwendung von "=" statt des Pfeils. Das geht auch, aber bei R-Programmier:innen ist der Pfeil in der Regel gebräuchlicher.)*
+
+
+Mit den angelegten Objekten kann weitergearbeitet werden. 
+
+```{r}
+a*b
+```
+
+Auch können Objekte zur Anwendung in Funktionen verwendet werden. 
+
+```{r}
+sqrt(a)
+```
+
+Das Ergebnis aus dieser Berechnung kann ebenfalls wieder in einem Objekt gespeichert werden. 
+Das folgende Beispiel zeiht auch, dass Objekte nicht zwangsläufig nur aus einem Buchstaben bestehen müssen, sondern dass das Objekt "wurzel", das hier angelegt wird, ebenfalls einen nummerischen Wert enthalten kann. 
+
+```{r}
+wurzel <- sqrt(a)
+```
+
+Und auch mit diesem Objekt lässt sich weiter arbeiten.
+
+```{r}
+round(wurzel, digits = 2)
+```
+
+Es bietet sich immer an, aussagekräftige Bezeichnungen für Objekte zu verwenden, um den Überblick zu behalten. Gerade dann, wenn Objekte dazu benutzt werden, Variablen für einen Datensatz anzulegen, sollte aus der Objektbezeichnung der Variablenname hervorgehen. Dabei ist die Groß- und Kleinschreibung zu beachten. "Wurzel" und "wurzel" sind zwei verschiedene Bezeichnungen. 
+
+Es können aber nicht nur Zahlen sondern auch Zeichenketten, sogenannte "Strings" als Objekte angelegt werden: 
+
+```{r}
+Vorname <- "Albert"
+Nachname <- "Mustermensch"
+```
+
+Auch mit diesen Objekten kann im Folgenden gearbeitet werden, z.B. mit der **print()** Funktion: 
+
+```{r}
+print(Vorname)
+print(Nachname)
+```
+
+Oder mit der **paste()** Funktion, die mehrere Strings aneinanderreihen kann: 
+
+```{r}
+paste(Vorname, Nachname)
+```
+
+So lässt sich zum Beispiel eine Begrüßung formulieren: 
+
+```{r}
+paste("Guten Tag", Vorname, Nachname)
+```
+
+Mit der Funktion **c()** - wobei c für "concatenate", auf deutsch: verketten - lassen sich auch mehrere Werte in einem Objekt hinterlegen:
+
+```{r}
+Vornamen <- c("Albert", "Betty", "Carlo")
+print(Vornamen)
+
+```
+
+```{r}
+Alter <- c(21, 19, 25)
+print(Alter)
+```
+
+
+## Datentypen
+
+Es gibt unterschiedliche Arten von Daten. Mit der Funktion **typeof()** können wir uns anzeigen lassen, um welche Form es sich handelt.
+
+Reelle Zahlen (positv, negativ, mit und ohne Dezimalstelle) werden in R mit "double" oder "numeric" bezeichnet.  
+
+```{r}
+a <- 3.4
+typeof(a)
+```
+
+Eine weitere Form der numerischen Variablen stellen die Variablen vom Typ "integer" da. Dabei handelt es sich um ganze Zahlen (ohne Dezimalstellen). Soll eine Zahl explizit als integer gespeichert werden, muss hinter den Wert ein großes L geschrieben werden. Integer-Variablen haben den Vorteil, dass sie weniger Speicherplatz einnehmen und dann auch schneller verarbeitet werden können. Das kann bei der Verarbeitung sehr großer Datenmengen relevant sein. 
+
+```{r}
+b <- 5L
+typeof(b)
+```
+
+Die nächste wichtige Art von Variablentyp sind die "character" Variablen. Dabei handelt es sich um Strings, also Zeichenfolgen. Bei der Eingabe von character-Variablen (und Strings allgemein) ist auf die Verwendung der Anführungszeichen zu achten.
+
+```{r}
+name <- "Albert"
+print(name)
+typeof(name)
+```
+
+Werden Zahlenwerte in Anführungszeichen gesetzt, erkennt R diese ebenfalls als Zeichenfolgen. Es ließe sich damit nicht ohne weiteres Rechnen, wie mit einer numerischen Variable (vom Typ double). 
+
+```{r}
+c <- "29"
+typeof(c)
+```
+
+Allerdings lassen sich als String gespeicherte Variablen umwandeln mit den Funktionen **as.integer()**, **as.double** oder **as.numeric()**, wie hier im Beispiel. Die alte Variable muss dabei durch Zuweisung überschrieben werden. 
+
+```{r}
+c <- as.numeric(c)
+typeof(c)
+```
+
+Für den Einstieg in R sind darüber hinaus noch die Daten vom Typ "logical" relevant. Dabei handelt es sich um die Booleschen Operatoren TRUE und FALSE. Diese können auch als Variablen gespeichert werden. 
+
+```{r}
+is_day <- TRUE
+is_night <- FALSE 
+
+typeof(is_day)
+typeof(is_night)
+```
+
+TRUE und FALSE können aber auch das Ergebnis von Abfragen sein: 
+
+```{r}
+is.character(name)
+is.numeric(c)
+```
+
+
+## Packages installieren und laden
+
+Packages (Pakete) sind Sammlungen von Funktionen, die spezifische Probleme lösen sollen.  
+Um ein Package zu installieren, wird die Funktion **install.packages()** verwendet. Das installierte Package muss vor der Ausführung aber (jedes Mal, wenn R neu gestartet wird) wieder aufgerufen werden. Dies erfolgt über die Funktion **library()**
+
+```{r}
+# install.packages("car")
+library(car)
+```
+
+
+## Die Hilfefunktion
+
+Jede Funktion hat eine Dokumentation, die bei Aufruf im Reiter "Help" einsehbar ist. Dort gibt es auch ein Suchfeld.   
+Ist der Name der gesuchten Funktion bekannt, kann das Hilfefenster mit "?" vor der Funktion aufgerufen werden: 
+
+```{r}
+?sum
+```
+
+Der Aufbau der Hilfeseiten ist immer gleich: 
+
+- **Description**: Überblick über die Funktion  
+- **Usage**: Beispiel, wie die Funktion geschrieben werden kann (inkl. Voreinstellungen, engl.: default settings), mit der erwarteten Reihenfolge der Argumente  
+- **Arguments**: Liste der benötigten Argumente  
+- **Details**: weitere Dokumentation zur Entwicklung und zum tieferen Verständnis der Funktion  
+- **Value**: der zu erwartende Output (nach seiner Form)  
+- **Resources**: Literaturhinweise  
+- **Examples**: Beipiele, kopierbar zur Anwendung mit eigenen Werten  
+
+Ist der Name der gesuchten Funktion nicht bekannt, lässt sich auch eine Keyword-Suche mit "??" durchführen. In diesem Fall werden alle Funktionen aufgelistet, in denen das Suchword vorkommt, 
+
+```{r}
+??sum
+```
+
+## Ein erstes kleines Programm schreiben (Umrechner)
+
+Sobald wir Code schreiben mit dem Ziel ein bestimmtes Problem nach vorgegebenen Regeln/ Anweisungen zu lösen, schreiben wir ein Programm. Mit den bisher behandelten Aspekten lässt sich zum Beispiel schon ein einfaches Programm schreiben, mit dem Meilen in Kilometer umgerechnet werden können: 
+
+```{r}
+miles <- 500
+kilometers <- miles * 1.609344
+print(kilometers)
+```
+
+Wenn der Wert für die Variable miles geändert wird, wird auch die Kilometer-Angabe neu berechnet.   
+
+Ein kleiner Exkurs:  
+Soll das ganze im Ergebnis noch ein bisschen schöner dargestellt werden, kann statt mit **print()** mit der **sprintf()** Funktion gearbeitet werden, mit der man über Platzhalter Variablen in eine Zeichenfolge einbetten kann: 
+
+```{r}
+sprintf("%s Meilen entsprechen %s Kilometern.", miles, kilometers)
+```
+
+
+
+\newpage
+
+# Vektoren  
+
+Ein Vektor ist die Zusammenfassung von Objekten zu einer endlichen Folge. Vektoren sind eindimensional und bestehen nur aus einem Datentyp. 
+
+## Einen Vektor anlegen  
+
+Mit der Funktion **c()** lassen sich Vektoren anlegen. "c" steht dabei für *combine* oder *concatenate* (=verketten). Die Werte des anzulegenden Vektors werden in der Funktion mit Komma getrennt. Sollen Dezimalzahlen im Vektor enthalten sein, muss der Punkt als Dezimaltrennzeichen genutzt werden. 
+
+```{r}
+b <- c(0, 1, 2, 3, 4, 5)
+```
+
+Der Vektor b lässt sich auch wie folgt anlegen, wenn man aufeinanderfolgende Werte hat und diese nicht einzeln auflisten will. Der ":" bedeutet in diesem Fall "bis".
+
+```{r}
+b <- c(1:5)
+print(b)
+b_rückwärts <- c(5:1)
+print(b_rückwärts)
+```
+
+Wie lang ein Vektor ist, kann mit der Funktion **length()** angezeigt werden: 
+
+```{r}
+length(b)
+```
+
+Welche Struktur ein Objekt aufweist, lässt sich mit **str()** herausfinden: 
+
+```{r}
+str(b)
+```
+
+Um einen Vektor nicht mit ganzen Zahlen sondern mit einer Sequenz kleinerer Zwischenschritte anzulegen, kann die Funktion **seq(from = , to = , by = )** genutzt werden: 
+
+```{r}
+c <- seq(from = 1, to = 2, by = 0.1)
+print(c)
+```
+
+Auch für Vektoren gilt, dass nicht nur nummerische Objekte verwendet werden können, sondern auch Strings.  
+
+```{r}
+d <- c("Albert", "Betty", "Carlo")
+length(d)
+str(d)
+```
+
+
+## Indexing in einem Vektor
+
+Indexing bedeutet das Zugreifen auf Elemente in einem Objekt. Das Zugreifen auf Elemente in einem Vektor erfolgt über die eckigen Klammern: 
+
+```{r}
+# es wird auf das dritte Element zugegriffen 
+# (weil der Vektor mit 0 beginnt, ist die 2 das dritte Element)
+b[3] 
+
+# es wird auf alle Elemente AUßER das dritte Element zugegriffen
+b[-3] 
+
+# Zugriff auf mehrere Elemente (1 bis 4)
+b[1:4] 
+```
+
+## Werte in einem Vektor ersetzen
+
+Mithilfe des Indexing können einzelne Werte im Vektor geändert werden. Schauen wir uns den oben angelegten Vektor b noch einmal an: 
+
+```{r}
+print(b)
+```
+
+Soll nun der dritte Wert ausgewechselt werden, wird das wie folgt gelöst:
+
+```{r}
+b[3] <- 99
+print(b)
+```
+
+Auf diese Weise können auch Werte angefügt werden:
+
+```{r}
+b[6] <- 6
+print(b)
+```
+
+
+## Eine Funktion auf einen Vektor anwenden
+
+```{r}
+# errechnet den Durchschnitt aus den Werten des Vektors
+mean(b) 
+
+# bildet die Summe aus den Werten des Vektors
+sum(b) 
+
+# bildet das Produkt aus den Werten des Vektors
+prod(b)
+```
+
+
+## Einen Vektor benennen
+
+Es wird ein Vektor mit vier Werten angelegt:   
+```{r}
+age <- c(21, 22, 23, 24)
+```
+
+Dieser Vektor hat noch keine weiteren Eigenschaften, was mit den Funktionen **attributes()** und **names()** überprüft werden kann. 
+
+```{r}
+attributes(age)
+names(age)
+```
+
+Dem Vektor sollen Eigenschaften zugeordnet werden mithilfe der Funktion **names()**  
+Es handelt sich bei dem Vektor um die Altersangaben von vier (fiktiven) Studierenden. Die Namen der Studierenden werden nun dem Vektor ebenfalls zugeschrieben.   
+Achtung: Die Namen als Zeichenfolgen müssen in Anführungszeichen gesetzt werden!
+
+```{r}
+names(age) <- c("Albert", "Betty", "Carlo", "Dani") 
+```
+
+Lassen wir den Vektor mit der Funktion **print()** ausgeben, sehen wir Namen und Alter zugeordnet. 
+
+```{r}
+print(age)
+```
+
+Auch in diesem Vektor kann man mithilfe des Indexing auf Elemente zugreifen.  
+
+```{r}
+# Indexing über die Position des Elements
+age[2] 
+
+# Indexing über den Namen des Elements (Wie alt ist Albert?)
+age["Albert"] 
+
+# Auswahl der ersten drei Einträge
+age[1:3] 
+
+# Ausschluss der Einträge 2 bis 3
+age[-(2:3)] 
+ 
+# Auswahl durch logische Operatoren
+age[age < 23]
+```
+
+Sollen die Namen/ Attribute des Vektors gelöst werden, kann die Funktion überschrieben werden:
+
+```{r}
+names(age) <- NULL
+```
+
+Soll ein Objekt ganz gelöscht werden, kann die Funktion **rm()** (=remove) genutzt werden. 
+
+```{r}
+remove(age)
+```
+
+Das Objekt taucht anschließend nicht mehr im Environment auf und kann nicht weiter genutzt werden. 
+
+\newpage
+# Matrizen 
+
+Matrizen sind Erweiterungen von Vektoren. Während Vektoren eindimensional sind, sind Matrizen zweidimensionale Anordnungen. Dabei haben Matrizen eine feste Anzahl von Zeilen und Spalten und können nur einen Datentyp enthalten. 
+
+## Vom Vektor zur Matrix: Dimensionen eines Vektors ändern
+
+Mit der Funktion **seq()** wird eine Sequenz angelegt, im folgenden Beispiel also eine Sequenz von 10 bis 120. Das Argument "by = " gibt an, dass die Sequenz in Zehnerschritten angelegt werden soll. 
+
+```{r}
+d <- seq(10, 120, by = 10)
+print(d)
+```
+
+Mit der Funktion **class()** kann überprüft werden, um was für eine Art Objekt es sich handelt. In diesem Fall handelt es sich um einen numerischen Vektor.
+```{r}
+class(d)
+```
+
+Nun soll der eindimensionale Vektor in ein zweidimensionales Objekt mit 3 Zeilen und 4 Spalten umgewandelt werden mit der Funktion **dim()**
+
+```{r}
+dim(d) <- c(3,4) 
+print(d)
+```
+
+Wird nun mit der Funktion class() überprüft, um welche Art von Objekt es sich handelt, zeigt sich, dass die Umwandlung in eine Matrix/ ein Datenfeld (= array) erfolgreich war:
+
+```{r}
+class(d)
+```
+
+
+## Eine Matrix erstellen
+
+Matrizen können mit der Funktion **matrix()** erstellt werden. Hier eine Matrix mit den Werten von 1 bis 12, aufgeteilt auf 3 Zeilen mit dem Argument *"nrow ="*: 
+
+```{r}
+mtrx <- matrix(1:12, nrow = 3)
+print(mtrx)
+```
+
+Es kann aber auch die Anzahl der Spalten definiert werden mit dem Argument *"ncol ="*:
+
+```{r}
+mtrx2 <- matrix(1:12, ncol = 3)
+print(mtrx2)
+```
+
+Nach der Voreinstellung (= default settings) werden die Werte in der Matrix entlang der Spalten geordnet. Um die Werte entlang der Zeilen zu ordnen, muss das Argument *"byrow = TRUE"* aufgenommen werden.
+
+```{r}
+mtrx2 <- matrix(1:12, ncol = 4, byrow = TRUE) 
+print(mtrx2)
+```
+
+## Mehrere Vektoren zu einer Matrix zusammenfügen
+
+Mehrere Vektoren können mithilfe der Funktionen **cbind()** (= column bind) und **rbind()** (=row bind) zu einer Matrix zusammengefasst werden. 
+Zuerst werden zwei Vektoren angelegt, mit der täglichen Social Media Nutzung in Minuten von Albert und Betty:
+
+```{r}
+Albert <- c(123, 114, 105, 134, 127, 102, 99)
+Betty <- c(90, 98, 92, 102, 115, 81, 75)
+
+socialmedia <- cbind(Albert, Betty)
+print(socialmedia)
+```
+
+Nun sollen die Zeilen auch noch benannt werden mit der Funktion **rownames()**
+
+```{r}
+rownames(socialmedia) <- c("Montag", "Dienstag", "Mittwoch", 
+                           "Donnerstag", "Freitag", "Samstag", "Sonntag")
+print(socialmedia)
+```
+
+Zeilen und Spalten lassen sich einfach tauschen mit der Funktion **t()**
+Achtung: Das ursprüngliche Objekt wird hier überschrieben durch die Zuordnung:
+
+```{r}
+socialmedia <- t(socialmedia)
+print(socialmedia)
+```
+
+Nun soll ein weiterer Fall hinzugefügt werden. Dazu wird die Socialmedia Nutzung von Carlo als Vektor angelegt und anschließend mit der Funktion *rbind()* zur Matrix hinzugefügt:
+
+```{r}
+Carlo <- c(67, 78, 80, 72, 62, 55, 84)
+socialmedia <- rbind(socialmedia, Carlo)
+print(socialmedia)
+```
+
+## Operationen in der Matrix
+
+Die Summe der Zeilen kann mit der Funktion **rowSums()** errechnet werden. Dies entspricht im Beispiel der Gesamtzahl der Socialmedianutzung pro Person: 
+
+```{r}
+rowSums(socialmedia)
+```
+
+Mit der Funktion **colSums()** werden die Summen für jede Spalte gebildet:
+```{r}
+colSums(socialmedia)
+```
+
+Die Funktionen **rowMeans()** und **colMeans()** bilden jeweils den Durchschnitt für die Zeilen und Spalten:
+
+```{r}
+rowMeans(socialmedia)
+colMeans(socialmedia) 
+```
+
+Die so errechneten Summen und Durchschnitte können wiederum als Vektoren in Objekte gespeichert werden, um sie dann zur Matrix hinzuzufügen: 
+
+```{r}
+total <- colSums(socialmedia)
+average <- colMeans(socialmedia)
+mtrx.comb <- rbind(socialmedia, total, average)
+print(mtrx.comb)
+```
+
+
+## Matrix erstellen in einer Code-Zeile
+
+Die oben in mehreren Schritten erstellte Matrix kann auch in einem Schritt erstellt werden. Die Benennung von Zeilen und Spalten erfolgt mit dem Argument *"dimnames ="*, wobei dann eine Liste mit zwei Vektoren folgt.
+
+```{r}
+socialmedia <- matrix(c(123, 114, 105, 134, 127, 102, 
+                    99, 90, 98, 92, 102, 115, 81, 
+                    75, 67, 78, 80, 72, 62, 55, 84),
+              nrow = 3, byrow = TRUE,
+              dimnames = list(c("Albert", "Betty", "Carlo"),
+                            c("Montag", "Dienstag", "Mittwoch",
+                              "Donnerstag", "Freitag", "Samstag",
+                              "Sonntag")))
+
+print(socialmedia)
+```
+
+
+## Indexing in der Matrix
+Auch in einer Matrix kann auf einzelne Elemente zugegriffen werden. 
+
+```{r}
+vec <- c(11, 21, 31, 41, 12, 22, 32, 42)
+matr.a <- matrix(vec, nrow = 4)
+matr.a
+```
+
+Möchte man sich vergewissern (bzw. herausfinden), wie viele Zeilen und Spalten eine Matrix hat, kann die Funktion **dim()** dazu verwendet werden.
+
+```{r}
+dim(matr.a)
+```
+
+
+Indexing in der Matrix erfolgt ebenfalls über die Verwendung eckiger Klammern. Wichtig ist hier, dass in den Klammern beide Dimensionen der Matrix angesteuert werden, wobei die Position des auszuwählenden Element in der Zeile zuerst genannt wird (und vor dem Komma steht), die Position in der Spalte an zweiter Stelle (und hinter dem Komma). Soll also das Element in der 3. Zeile und 2. Spalte gewählt werden, ist dies wie folgt anzugeben: 
+
+```{r}
+matr.a[3,2]
+```
+
+Alle Elemente der dritten Zeile werden wie folgt angesteuert (der Platz HINTER dem Komma bleibt leer):
+
+```{r}
+matr.a[3,]
+```
+
+Alle Elemente der zweiten Spalte werden wie folgt angesteuert (der Platz VOR dem Komma bleibt leer):
+
+```{r}
+matr.a[,2]
+```
+
+Auch mehrere Zeilen und Spalten lassen sich auswählen. Im Beispiel werden die Zeilen 1 und 3 der ursprünglichen Matrix in einer neuen Matrix dagestellt: 
+```{r}
+matr.a[c(1,3),]
+```
+
+Eine andere Variante, um mehrere Spalten oder Zeilen gleichzeitig ausgeben zu lassen, ist die Verwendung des Doppelpunkts. Im Beispiel werden damit die Zeilen 2 BIS 3 ausgewählt.
+
+```{r}
+matr.a[2:3, ]
+```
+
+
+Die Zeilen uns Spalten der Matrix können mit den Funktionen **rownames()** und **colnames()** benannt werden. Im Folgenden kann auch über die Namen auf die Elemente zugegriffen werden. 
+
+```{r}
+rownames(matr.a) <- c("Zeile 1", "Zeile 2", "Zeile 3", "Zeile 4")
+colnames(matr.a) <- c("Spalte 1", "Spalte 2")
+print(matr.a)
+
+matr.a["Zeile 2", ]
+matr.a["Zeile 1", "Spalte 2"]
+```
+
+Mit der Funktion **dimnames()** kann man sich die Benennungen der Zeilen und Spalten ausgeben lassen.
+
+```{r}
+dimnames(matr.a)
+```
+
+## Werte in einer Matrix ersetzen
+
+Wie auch bei Vektoren lassen sich mithilfe des Indexing Werte in der Matrix ersetzen. Schauen wir uns die ursprüngliche Matrix noch einmal an:
+
+```{r}
+print(matr.a)
+```
+
+Es können sowohl einzelne Werte, ganze Zeilen oder ganze Spalten ersetzt werden. Im ersten Beispiel wird der erste Wert der zweiten Zeile ersetzt, indem diesem ein neuer Wert zugeschrieben wird: 
+
+```{r}
+matr.a[2,1] <- 99
+print(matr.a)
+```
+
+Nun wird die gesammte dritte Zeile geändert:
+
+```{r}
+matr.a[3,] <- c(100, 101)
+print(matr.a)
+```
+
+Und schließlich die gesamte zweite Spalte: 
+
+```{r}
+matr.a[,2] <- c(200, 201)
+print(matr.a)
+```
+
+Beachten Sie: Obwohl in der zweiten Spalte vier Werte enthalten sind, werden im Befehl oben nur zwei neue Werte angegeben. Diese neuen Werte werden bei der Umsetzung aber einfach so lange wiederholt, bis alle Werte der Spalte mit neuen Werten gefüllt ist. Diesen Effekt nennt man *recycling* in R. 
+
+\newpage
+# Data Frames
+
+Vektoren und Matrizen können nur Elemente eines einzigen Datentyps speichern. Data Frames können mehrere Datentypen beinhalten. Es handelt sich bei Data Frames um zweidimensionale Listen, die aus Vektoren mit gleicher Länge aber nicht zwangsläufig dem gleichen Datentyp bestehen.  
+
+
+## Einen Data Frame erstellen
+
+Ein Data Frame lässt sich mithilfe von mehreren unterschiedlichen Vektoren erstellen. Im Folgenden werden Vektoren mit gleicher Länge erstellt: 
+
+```{r}
+name <- c("Albert", "Betty", "Carlo", "Dani")
+sex <- c("m", "w", "m", "d")
+age <- c(23, 21, 25, 19)
+hight <- c(173, 165, 168, 175)
+edu <- c("BA", "BA", "MA", "Abi")
+```
+
+Mit der Funktion **data.frame()** können die Vektoren zu einem Datensatz zusammengefügt werden. 
+Es entsteht eine klassische Datentabelle, in der jede Zeile einen Fall und jede Spalte eine Variable darstellt. 
+
+```{r}
+my.data <- data.frame(name, sex, age, hight, edu)
+print(my.data)
+```
+
+
+Die Spalten sind nun mit den Variablennamen überschrieben. Diese lassen sich nachträglich ändern, wenn zum Beispiel aussagekräftigere Bezeichnungen gewünscht werden: 
+
+```{r}
+names(my.data) <- c("Name", "Geschlecht", "Alter", "Größe", "Abschluss")
+print(my.data)
+```
+
+Der Schritt der Benennung kann auch schon während der Erstellung des Datensatzes erfolgen:
+
+```{r}
+my.data <- data.frame(Name = name, Geschlecht = sex, Alter = age, Größe = hight, Abschluss = edu)
+```
+
+Die im Datensatz enthaltenen Variablen lassen sich mit der Funktion **names()** aufrufen:
+
+```{r}
+names(my.data)
+```
+
+Das Variablenniveau wird von R automatisch zugeschrieben. Die Zuschreibung lässt sich überprüfen mit der Funktion **str()** (= structure). Im Beispiel sind Variablen des Typs *"num" = numeric* sowie *"chr = character"* enthalten:
+
+```{r}
+str(my.data)
+```
+
+## Eine bestehende Matrix in einen Dataframe umwandeln
+
+In Kapitel 3.5 wurde die Matrix socialmedia erstellt: 
+
+```{r}
+print(socialmedia)
+```
+
+Schauen wir uns auch die Struktur der Matrix noch einmal an: 
+
+```{r}
+str(socialmedia)
+```
+
+Die Matrix kann mit der Funktion **as.data.frame()** in einen Datensatz umgewandelt werden: 
+
+```{r}
+socialmedia.df <- as.data.frame(socialmedia)
+str(socialmedia.df)
+```
+Aus der Übersicht der Struktur lässt sich nunerkennen, dass der Data Frame 3 Fälle (obs. = observations) und 7 Variablen enthält. 
+
+```{r}
+print(socialmedia.df)
+```
+
+In der Liste der Variablen ist ersichtlich, dass die erste Spalte der Matrix (die Namen der Fälle) nicht als Variable aufgenommen worden ist. Verloren sind die Namen aber auch nicht. Sie sind als Zeilenbezeichnungen erhalten: 
+
+```{r}
+row.names(socialmedia.df)
+```
+
+Braucht man die Namen der Fälle als eigene Variable, kann das Package "data.table" eine Lösung bieten mit der Funktion **as.data.table()** und dem Argument *"keep.rownames = TRUE"*:
+
+```{r}
+library(data.table)
+socialmedia.df <- as.data.table(socialmedia.df, keep.rownames = TRUE)
+str(socialmedia.df)
+```
+
+Nun taucht die character-Variable mit den Namen in der Liste der Variablen auf. 
+
+## Den Datensatz speichern
+Ein erstellter Datensatz kann gespeichert werden, zum Beispiel im csv-Format. *csv* steht für für *comma separated values* und ist ein gängiges Format für die Speicherung von Datensätzen. Es handelt sich dabei um eine Textdatei, in der die Werte des Datensatzes Zeilenweise aufgelistet werden, wobei die einzelnen Werte mit einem Trennzeichen getrennt werden. Bei der Funktion **write.csv()** wird das Komma als Trennzeichen verwendet. Das kann zu Problemen führen, falls der Datensatz Dezimalzahlen mit Komma enthält (im deutschsprachigen Raum sehr üblich). Darum gibt es die Alternative **write.csv2()**, die als Trennzeichen das Semikolon verwendet. 
+Zur Struktur der Argumente in der Funktion: Zuerst wird das Objekt/ der Datensatz genannt, der gespeichert werden soll, anschließend wird mit dem Argument *"file ="* ein Dateiname vergeben, der die Dateiendung enthalten muss. Die Datei wird (wenn nicht anders angegeben) direkt im Working Directory gespeichert. Das Argument *"row.names = FALSE"* verhindert, dass eine weitere Spalte vorangestellt und gespeichert wird mit einer unnötigen zusätzlichen Zeilennummerierung. 
+
+
+```{r}
+write.csv(my.data, file = "myfirstdata.csv", row.names = FALSE)
+write.csv2(my.data, file = "myfirstdata2.csv", row.names = FALSE)
+```
+
+## Einen Datensatz öffnen
+
+### csv-Dateien 
+Das Einlesen eines gespeicherten csv-Datensatzes funktioniert analog zur Speicherung. Je nachdem, ob das verwendete Trennzeichen ein Komma oder ein Semikolon ist, muss entweder die Funktion **read.csv()** (für Komma-getrennte Werte) oder **read.csv2()** (für Semikolon-getrennte Werte) genutzt werden.
+Es bietet sich an, beim Laden eines Datensatzes diesen direkt als Objekt anzulegen
+
+```{r}
+data1 <- read.csv("myfirstdata.csv")
+print(data1)
+
+data2 <- read.csv2("myfirstdata2.csv")
+print(data2)
+```
+
+### SPSS Dateien
+
+Es lassen sich nicht nur csv-Dateien in R laden, sondern zum Beispiel auch Excel oder SPSS Dateien. In der Regel braucht es ein passendes Package, um den entsprechenden Importbefehl ausführen zu können. Das Beispiel zeigt das Öffnen einer SPSS-Datei mit dem Befehl **read_spss** aus dem Package *"haven"*. (Bei dem Datensatz im Beispiel handelt es sich um Befragungsdaten deutscher Journalist:innen aus der Worlds of Journalism Study.) 
+
+
+```{r}
+library(haven)
+WJS <- read_spss("WJS_Germany_kurz.sav", n_max = 10)
+print(WJS)
+```
+
+Mit dem Argument "n_max = 10" werden im Beispiel zu Anschauungszwecken nur die ersten 10 Fälle im Datensatz eingelesen. Um einen vollständigen Datensatz zu laden, würde dieses Arguent weggelassen werden. 
+
+Ein kleiner Exkurs: Die Arbeit mit SPSS-Datensätzen kann tricky sein, gerade was der Umgang mit Variablennamen und -bezeichnungen sowie Wertelabels angeht. Im Beispiel wird sichtbar, dass nur die Zahlencodes verwedet werden und es entsprechend immer eine Liste zur Hand bräuchte, mit der diese den Bezeichnungen der Ausprägungen zugeordnet werden können: 
+
+```{r}
+table(WJS$C1)
+```
+
+Um die Wertelabels sichbar zu machen, können Variablen zum Beispiel in einen Faktor umgewandelt werden mit der Funktion **as_factor()** und dem Argument *levels = "default"*. Nun lassen sich die beruflichen Positionen der befragten Journalist:innen direkt ablesen.  
+
+```{r}
+WJS$C1 <- as_factor(WJS$C1, levels = "default")
+table(WJS$C1)
+```
+
+
+## Grundlegende Operationen im Datensatz
+
+Um auf eine Variable im Datensatz zuzugreifen, um mit ihr zu arbeiten, wird folgende Schreibweise verwendet **Datensatz$Variable**
+Im Folgenden wird die Variable "Geschlecht" angezeigt
+
+```{r}
+my.data$Geschlecht
+```
+
+Den Altersdurchschnitt kann man entsprechend mit der Funktion **mean()** berechnen: 
+
+```{r}
+mean(my.data$Alter)
+```
+
+Die absoluten Häufigkeiten einer Variable lassen sich mit der Funktion **table()** anzeigen:
+
+```{r}
+table(my.data$Abschluss)
+```
+
+## Subsets auswählen (Indexing im Dataframe)
+
+Wie auch schon bei den Vektoren und den Matrizen können wir mithilfe der eckigen Klammern einzelne Werte, Zeilen und Spalten auswählen. 
+
+```{r}
+my.data[2,]
+```
+
+Diese Auswahl lässt sich als eigener Dataframe speichern.
+
+```{r}
+Betty <- my.data[2,]
+str(Betty)
+```
+
+Auch lassen sich Spalten auswählen:
+
+```{r}
+my.data[,1]
+```
+
+In diesem Fall werden die Werte der Spalte als Vektor gespeichert:
+
+```{r}
+names <- my.data[,1]
+str(names)
+```
+
+Es können auch mehrere Fälle ausgwählt werden, indem Bedingungen formuliert werden. Sollen zum Beispiel alle weiblichen Personen ausgewählt werden:
+
+```{r}
+my.data[my.data$Geschlecht == "w",]
+```
+
+Oder alle Personen, die älter sind als 21: 
+
+```{r}
+my.data[my.data$Alter > 21,]
+```
+
+Oder alle weibichen Personen, die älter sind als 21: 
+
+```{r}
+my.data[my.data$Alter > 21 & my.data$Geschlecht == "w",]
+```
+
+
+## Variablen zum Datensatz hinzufügen
+
+Dem Datensatz sollen weitere Variablen mit der Haarfarbe und der täglichen (durchschnittlichen) Socialmedianutzung hinzugefügt werden.
+
+```{r}
+hair <- c("schwarz", "braun", "rot", "blond")
+daily_socialm <- c(95, 71, 126, 89)
+
+my.data$Haarfarbe <- hair
+print(my.data)
+```
+
+Eine Variable wieder entfernen:
+
+```{r}
+my.data$Haarfarbe <- NULL
+```
+
+
+Variablen hinzufügen mit mit **cbind()**
+
+```{r}
+my.data <- cbind(my.data, Haarfarbe = hair, Socialmedia = daily_socialm)
+print(my.data)
+```
+
+## Variablenlabels nachträglich hinzufügen
+
+Wurden bei der Erstellung einer (zum Beispiel nominalen oder ordinalen) Variablen nur ihre nummerischen Werte notiert, lassen sich Variablenlabels auch nachträglich hinzufügen. Für das Beispiel legen wir im Folgenden eine weitere Variable an, in der notiert wird, ob die Person einen Test bestanden (=1) oder nicht bestanden (=0) hat. 
+
+```{r}
+test <- c(1,1,2,1)
+my.data <- cbind(my.data, test)
+print(my.data)
+```
+```{r}
+my.data$test <- factor(my.data$test, 
+                       levels = c(1,2),
+                       labels = c("nicht bestanden", "bestanden"))
+print(my.data)
+```
+
+
+## Fälle hinzufügen
+Fälle zu einem bestehenden Datensatz hinzuzufügen ist etwas schwieriger als Variablen hinzuzufügen. Es kann nicht einfach ein Vektor angelegt werden, da Vektoren nur einen Datentyp enthalten können. Die Lösung: Den Fall als eigenen Datensatz anlegen und mit **rbind()** beide Datensätze zusammenführen. 
+
+```{r}
+Emma <- data.frame(Name = "Emma", Geschlecht = "w", Alter = 24, Größe = 155,
+                   Abschluss = "MA", 
+                   Haarfarbe = "mittelblond", Socialmedia = 101, test = "bestanden")
+
+my.data <- rbind(my.data, Emma)
+print(my.data)
+```
+
+
+## Weitere Funktionen beim Datenimport  
+Der Beispieldatensatz von oben wurde um weitere Fälle ergänzt und gespeichert. 
+
+```{r}
+Studis <- read.csv2("Studis.csv")
+print(Studis)
+```
+
+Nur eine bestimmte Anzahl Fälle laden mit dem Argument *"nrow = "* beim Import: 
+
+```{r}
+Studis_short <- read.csv2("Studis.csv", nrow = 7)
+print(Studis_short)
+```
+
+
+Eine bestimmte Anzahl von Fällen überspringen mit *"skip ="*.   
+Aber Achtung: skip überspringt auch die erste Zeile mit den Variablennamen. mit dem Argument *"header = FALSE"* bleibt die erste Zeile als Variablenbezeichnung (allerdings nicht die Originalbezeichnung)
+
+```{r}
+Studis_short <- read.csv2("Studis.csv", nrow = 7, skip = 5, header = FALSE)
+print(Studis_short)
+```
+
+Möchte man die ursprünglichen Variablenbezeichnungen behalten, können diese zum Beispiel in einem vorherigen Schritt gespeichert werden und dann beim Datenimport mit *"col.names = "* hinzugefügt werden:
+
+```{r}
+var_labels <- names(read.csv2("Studis.csv", nrows = 1))
+Studis_short2 <- read.csv2("Studis.csv", col.names = var_labels, skip = 5, header =FALSE)
+print(Studis_short2)
+```
+
+
+var_labels <- names(read.csv("starwars.csv", nrows = 1))
+SW2b <- read.csv("starwars.csv", stringsAsFactors = FALSE, col.names = var_labels, skip = 5, header =FALSE)
+
+
+## Einen Datensatz erkunden
+
+```{r}
+nrow(Studis) # Anzahl der Zeilen (Fälle)
+ncol(Studis) # Anzahl der Spalten (Variablen)
+names(Studis) # Variablennamen
+colnames(Studis) # Namen der Spalten 
+rownames(Studis) # Namen der Zeilen (nicht sinnvoll in diesem Fall)
+str(Studis) # Angaben über die Struktur der Variablen
+summary(Studis) # erste deskriptive Einblicke 
+```
+
+\newpage
+# Listen
+
+Listen sind eine weitere Möglichkeit in R, Daten zu speichern. Es handelt sich bei Listen wie bei Vektoren ebenfalls um eindimensionale Objekte. Allerdings können Listen - anders als Vektoren - Daten unterschiedlicher Typen beinhalten. Damit sind Listen sehr allgemeine und flexible Elemente in R.  
+
+## Listen erstellen
+
+Erstellen wir zunächst einen Vektor und betrachten dessen Struktur: 
+
+```{r}
+data.vector <- c(1, 2, 3)
+print(data.vector)
+str(data.vector)
+```
+
+Eine Liste wird mit der Funktion **list()** erzeugt. Der Output der Liste sieht etwas anders aus:
+
+```{r}
+data.list <- list(1, 2, 3)
+print(data.list)
+```
+
+Die doppelten eckigen Klammern geben die Position jedes Elements der Liste an. Über diese Positionsbezeichnung kann auf die Elemente der Liste zugegriffen werden:
+
+```{r}
+print(data.list[[3]])
+```
+
+Betrachten wir auch die Struktur der Liste (im Vergleich zur Struktur des oben angelegten Vektors):
+
+```{r}
+str(data.list)
+```
+
+Aus der ersten Zeile geht hervor, dass es sich um eine Liste mit drei Elementen handelt. In den weiteren Zeilen wird für jedes enthaltene Element der Datentyp angezeigt.
+
+Nun kann die Liste, wie oben erwähnt, unterschiedliche Datentypen enthalten:
+
+```{r}
+data.list2 <- list(1, 2, 3, "letzte Chance")
+print(data.list2)
+```
+
+Sogar Vektoren können Teil von Listen sein: 
+
+```{r}
+data.list3 <- list(1, 2, 3, c("letzte Chance:", "Vorbei!"))
+print(data.list3)
+```
+
+Überprüfen wir auch hier noch mal die Struktur:
+
+```{r}
+str(data.list3)
+```
+
+Es wird deutlich, dass es sich nun um eine Liste aus vier Elementen handelt und das letzte Element eine Länge von zwei 
+
+## Ein Element zur Liste anfügen
+
+Der Liste können mit der Funktion **append** neue Elemente hinzugefügt werden: 
+
+```{r}
+data.list3 <- append(data.list3, "neues Element")
+print(data.list3)
+```
+
+Im Beispiel wird das neue Element hinten an die Liste angefügt. Soll ein neuer Wert an einer anderen Stelle eingefügt werden, spezifiert man die Stelle mit dem Argument *"after = "*
+
+```{r}
+data.list4 <- append(data.list3, "Einschub", after = 2)
+print(data.list4)
+```
+
+
+## Elemente der Liste ändern  
+
+Mithilfe des Indexing über die doppelten eckigen Klammern können Elemente in der Liste verändert werden: 
+
+```{r}
+data.list3[[3]] <- 100
+print(data.list3)
+```
+
+## Elemente der Liste löschen
+
+Elemente der Liste können auch gelöscht werden: 
+
+```{r}
+data.list3[[5]] <- NULL
+print(data.list3)
+```
+
+## Elemente der Liste benennen
+
+Elemente in einer Liste lassen sich benennen (ähnlich der Vergabe von Variablenbezeichnungen):
+
+```{r}
+person <- list(firstname = "Albert", lastname = "Mustermensch")
+print(person)
+```
+
+In der Darstellung findet sich nun die Schreibweise mit Dollarzeichen statt die Variante mit den doppelt eckigen Klammern. Die Elemente der Liste können nun auch über die Bezeichnung des jeweiligen Elements aufgerufen werden: 
+
+```{r}
+print(person$firstname)
+```
+
+## Eine Liste in einen Vektor umwandeln
+
+Listen können auch in Vektoren umgewandelt werden. Wenn unterschiedliche Datentypen in der Liste vorhanden sind, werden alle Elemente als String-Variablen im Vektor gespeichert. 
+
+```{r}
+new.vector <- unlist(data.list3)
+print(new.vector)
+```
+
+
+
+
+\newpage
+# Deskriptive Statistik
+
+Worum gehts?  
+
+- Einen vorliegenden Datensatz verstehen und beschreiben  
+- Anzahl und Verteilung von Merkmalen erkunden  
+- Den Zahlen wieder Informationen entlocken  
+
+Jedes mithilfe deskriptiver Statistik gewonnene Ergebnis trifft damit Aussagen genau über die Gruppe der Merkmalsträger/ Elemente des Datensatzes. Nicht aber darüber hinaus.
+
+*Alle folgenden Beispiele beziehen sich auf den "Studis.csv"-Datensatz.*
+
+
+## Häufigkeiten
+
+Häufigkeit (frequencies): Darstellung einer Ausprägung im Verhältnis ihres Auftretens
+
+### Absolute Häufigkeit 
+
+- tatsächliches Vorkommen im Sample  
+- schwer vergleichbar bei unterschiedlichen Samplen-Größen  
+- Darstellung mit der Funktion **table()**
+
+```{r}
+abschluss <- table(Studis$Abschluss) 
+print(abschluss)
+```
+
+
+### Relative Häufigkeit  
+
+- Anteil der Ausprägung am Sample in %  
+- Darstellung mit der Funktion **prop.table()**  
+- Achtung: Hier wird das Objekt genutzt, das im vorherigen Schritt für die absoluten Häufigkeiten angelegt worden ist. Die Funktion könnte aber auch verschachtelt werden: **prop.table(table())**
+
+```{r}
+rel_abschluss <- prop.table(abschluss)
+print(rel_abschluss)
+```
+
+
+### Kumulierte Häufigkeit
+
+- gibt zu jedem Wert der Merkmalsausprägung an, wie viele Fälle kleiner oder gleich dem Wert sind  
+- addieren sich insgesamt auf 1 (=100%) zusammen 
+- Darstellung mit der Funktion **cumsum()**  
+
+```{r}
+kum_abschluss <- cumsum(rel_abschluss) 
+print(kum_abschluss)
+```
+
+### Häufigkeiten in einer gemeinsamen Tabelle darstellen
+
+Möchte man sich die oben erstellten absoluten, relativen und kumulativen Häufigkeiten zur besseren Übersicht zusammen darstellen lassen, können die erstellten Objekte in einer gemeinsamen Tabelle dargestellt werden. Um die Tabelle lesbarer zu gestalten, werden die mit der Funktion **round()** alle Werte auf drei Nachkommastellen gerundet. 
+
+```{r}
+Bildungsabsch <- cbind(abschluss, rel_abschluss, kum_abschluss)
+round(Bildungsabsch, digits = 3)
+```
+
+## Streuung
+
+- Wichtig zur Beschreibung der Daten  
+- Auskunft darüber, wie weit Datenpunkte voneinander entfernt liegen
+- Streuung bedeutet Variabilität
+-- Ziel von Statistik diese zu verstehen und zu erklären  
+-- Grundlage für viele weitere statistische Methoden
+
+### Minimum, Maximum und Range 
+
+Der Abstand zwischen dem kleinsten Wert (Minimum) und dem größten Wert (Maximum) bildet die Range (dt.: Spannweite). Diese wird in der Regel mit einem großen kursiven *R* dargestellt. 
+
+```{r}
+min <- min(Studis$Alter)
+print(min)
+max <- max(Studis$Alter)
+print(max)
+R <- max - min 
+print(R)
+```
+
+### Standardabweichung
+
+- Angabe, wie weit die Datenpunkte durchschnittlich vom Mittelwert entfernt liegen
+
+```{r}
+sd(Studis$Alter)
+```
+
+### Varianz
+
+- Quadrierte Standardabweichung  
+- Selten als Wert für die Streuung von Daten direkt angegeben aufgrund der schwierigen Interpretierbarkeit  
+- Aber zentrale Grundlage für viele weitere statistische Berechnungen, die die Streuung/ Variabilität von Daten aufklären wollen (Varianzaufklärung)  
+
+
+```{r}
+var(Studis$Alter)
+```
+
+
+Die Werte für Minimum, Maximum, Range und Standardabweichung lassen sich auch mit der **describe()** Funktion aus dem *psych*-Package anzeigen.
+
+```{r}
+# install.packages("psych")
+library(psych)
+describe(Studis$Alter)
+```
+
+
+## Maße der zentralen Tendenz 
+
+### Modus
+
+Der Modus einer kategorialen Häufigkeitsverteilung ist der Wert der häufigsten Merkmalsausprägung (auch mehrere Modalwerte möglich, wenn mehrere Merkmale gleich häufig auftreten). Es gibt in R keine direkte Funktion, um sich den Modus ausgeben zu lassen. Über die Anzeige der absoluten Häufigkeiten lässt sich aber der Wert mit der häufigsten Merkmalsausprägung ablesen. Im Beispiel beträgt der Modus 21 (das Alter 21 kommt 5mal vor). 
+
+```{r}
+table(Studis$Alter)
+```
+
+### Mittelwert oder arithmetisches Mittel
+
+Der Mittelwert ist der Durchschnitt der Werte, der sich aus der Summe aller Werte geteilt durch die Anzahl der Werte ergibt. Achtung: Extremwerte (wenige sehr große oder kleine Werte) beeinflussen den Mittelwert stark. Es ist immer sinnvoll, den Median ebenfalls zu betrachten. 
+
+```{r}
+mean(Studis$Alter)
+```
+
+
+### Median
+
+Der Median ist der Zentralwert eines Merkmals und damit die Ausprägung des Falls in der Mitte der der Größe nach geordneten Fälle. Bei einer gerade Anzahl wird die Ausprägung der beiden in der Mitte liegenden Fälle ermittelt. Im Gegensatz zum Mittelwert ist der Median weniger sensitiv gegenüber Extremwerten. 
+
+```{r}
+median(Studis$Alter)
+```
+
+Median und Mittelwert werden sowohl bei der **describe()**-Funktion als ach bei der **summary()**-Funktion ausgegeben. 
+
+```{r}
+summary(Studis$Alter)
+```
+
+## Kreuztabellen
+
+Kreuztabellen dienen der Darstellung des gemeinsamen Auftretens von nominalen oder ordinalen Merkmalsausprägungen. Kreuztabellen lassen sich ebenfalls mit der Funktion **table()** erstellen. Es werden die absoluten Häufigkeiten des gemeinsamen Auftretens zweier Merkmale dargestellt: 
+
+```{r}
+table(Studis$Geschlecht, Studis$Abschluss)
+```
+
+Um mit der Kreuztabelle weiterarbeiten zu können, bietet es sich an, diese in einem eigenen Objekt zu speichern:
+
+```{r}
+xtab <- table(Studis$Geschlecht, Studis$Abschluss)
+```
+
+Wichtig für die weitere Arbeit mit Kreuztabellen sind die sogenannten Randverteilungen, also die Summen der Werte in den Zeilen und Spalten. Diese lassen sich mit der Funktion **addmargins()** anzeigen. Dazu kann das oben angelegte Objekt genutzt werden. 
+
+```{r}
+addmargins(xtab)
+```
+
+Möchte man die relativen Häufigkeiten der gemeinsamen Merkmalsausprägungen betrachten, wird die Funktion **prop.table()** genutzt. Bei der folgenden Darstellung ist die Basis für die Berechnung der relativen Werte die Gesamtzahl der Fälle. In diesem Fall ist N=26.
+
+```{r}
+prop.table(xtab)
+```
+
+Oftmals interessieren aber auch die relativen Anteile einer Ausprägung innerhalb einer Gruppe. Dazu nutzt man die Angabe von Zeilen- und Spaltenprozenten anstatt der Gesamtprozente. Dazu muss das Argument *"margin = "* spezifiziert werden. Das folgende Beispiel zeigt die Zeilenprozente. Die Funktion wird mit der Funktion **addmargins()** verschachtelt um die Randverteilungen darzustellen. Daraus lässt sich ablesen, dass sich nun die Werte in der Zeile auf 100% aufaddieren.
+
+```{r}
+addmargins(prop.table(xtab, margin = 1))
+```
+
+Die Tabelle liest sich nun also so: 40% aller Frauen im Datensatz haben "Abi" als höchsten Bildungsabschluss angegeben. 30 % der Frauen haben einen Bachelor, weitere 30 % einen Master. 40 + 30 + 30 ergeben dann 100% der Frauen.  
+
+Für die Spaltenprozente muss das Argument *"margin = 2"* gesetzt werden:
+
+```{r}
+addmargins(prop.table(xtab, margin = 2))
+```
+
+Es addieren sich nun die Spalten auf 100 % zusammen. Entsprechend würde man die Tabelle lesen: Von allen Personen, die Abi als höchsten Abschluss angeben haben, sind 14,28 % divers, 28,57 % männlich und 57,14 % weiblich. 
+
+Ist die Tabelle zu unübersichtlich, kann mit der Funktion **round(x, digits = 3)** gerundet werden.  
+(Beachte: Um die Code-Zeile etwas lesbarer zu gestalten, werden im folgenden Beispiel Zeilenumbrüche und Einrückungen verwendet.)
+
+```{r}
+round(
+  addmargins(
+    prop.table(xtab, margin = 2)), 
+      digits = 3)
+```
+
+\newpage
+# Visualisierungen mit R-Basics
+
+Einfache Visualisierungen helfen beim Verständnis von Daten, lassen erste Muster erkennen, Ausreißer identifizieren etc. 
+Die folgenden Abschnitte behandeln einfache Visualisierungen mit dem Basic-Paket von R. Solche stilistisch einfachen Grafiken dienen eher der Exploration von Daten im eigenen Arbeitsprozess. Für die grafische Aufbereitung zum Zwecke der Veröffentlichung bietet sich die Arbeit mit dem Package *ggplot2* an, das allerdings seine eigene Grammatik mitbringt. Die Grundlagen von ggplot2 werden in einem späteren Abschnitt behandelt. 
+
+## Einfaches Balkendiagramm
+
+Die Funktion zur Erstellung eines Balkendiagramms ist **barplot()**. Mithilfe von Balkendiagramm lassen sich sowohl absolute als auch relative Häufigkeiten anzeigen. Im Folgenden sollen die Häufigkeiten für das Alter aus dem Studi-Datensatz als Balkendiagramm visualisiert werden. Damit die absoluten Häufigkeiten verwendet werden, muss als Grundlage für die Visualisierung die Häufigkeitstabelle genutzt werden. 
+
+```{r}
+barplot(table(Studis$Alter))
+```
+
+
+Im Folgenden werden die Achsen beschriftet. Zuerst die x-Achse mit dem Argument *"xlab ="*
+
+```{r}
+barplot(table(Studis$Alter), 
+        xlab = "Alter")
+```
+
+Anschließend die y-Achse mit dem Argument *"ylab ="*
+
+```{r}
+barplot(table(Studis$Alter), 
+        xlab = "Alter", ylab = "Anzahl")
+```
+
+Mit dem Argument *"nain ="* lässt sich eine Überschrift einfügen: 
+
+```{r}
+barplot(table(Studis$Alter), 
+        xlab = "Alter", ylab = "Anzahl", 
+        main = "Säulendiagramm")
+
+```
+
+Die Größe der Beschriftungen lassen sich mit den Argumenten *"cex.axis ="* für die y-Achse und *"cex.names ="* für die x-Achse anpassen:
+
+```{r}
+barplot(table(Studis$Alter), 
+        xlab = "Alter", ylab = "Anzahl", 
+        main = "Säulendiagramm", 
+        cex.axis = 2, cex.names = 2)
+```
+
+
+Die Farbe der Balken kann mit dem Argument *"col ="* verändert werden: 
+
+```{r}
+barplot(table(Studis$Alter), 
+        xlab = "Alter", ylab = "Anzahl", 
+        main = "Säulendiagramm", 
+        cex.axis = 1.2, cex.names = 1.2, 
+        col = "lightblue") 
+```
+
+Weitere Farbanpassungen für die Achsenbeschriftungen (Werte und Titel) die Überschrift können mit *"col.main"*, *"col.axis"* und *"col.lab"* vorgenommen werden. Eine schöne Übersicht über die Möglichkeiten der Farbgebung findet sich hier: https://bjoernwalther.com/wp-content/uploads/2019/12/col9.png  
+
+```{r}
+barplot(table(Studis$Alter), 
+        xlab = "Alter", ylab = "Anzahl", 
+        main = "Säulendiagramm", 
+        cex.axis = 1.2, cex.names = 1.2, 
+        col = "lightblue", col.axis = "darkred", 
+        col.main = "darkgreen", col.lab = "darkblue") 
+```
+
+Mit dem Argument *"axis.lty = 1"* werden Striche zur x-Achse hinzugefügt, um Balken und Werte besser miteinander zu verbinden:
+
+```{r}
+barplot(table(Studis$Alter), 
+        xlab = "Alter", ylab = "Anzahl", 
+        main = "Säulendiagramm", 
+        cex.axis = 1.2, cex.names = 1.2, 
+        col = "lightblue", col.axis = "darkred", 
+        col.main = "darkgreen", col.lab = "darkblue",
+        axis.lty = 1)
+```
+
+Zu guter Letzt kann die Beschriftung an der x-Achse gedreht werden mit dem Argument *"las = 2"*, was der besseren Lesbarkeit dienen kann, wenn nicht nur Zahlen sondern Begriffe für die Beschriftung benötigt werden. 
+
+```{r}
+barplot(table(Studis$Alter), 
+        xlab = "Alter", ylab = "Anzahl", 
+        main = "Säulendiagramm", 
+        cex.axis = 1.2, cex.names = 1.2, 
+        col = "lightblue", col.axis = "darkred", 
+        col.main = "darkgreen", col.lab = "darkblue",
+        axis.lty = 1,
+        las = 2)
+```
+\newpage
+
+## Einfaches Streudiagramm
+
+Streudiagramme (engl.: scatter plot) sind Darstellungen vom gemeinsamen Auftreten von mindestens zwei i.d.R. metrischen Variablen in einem Koordinatensystem. Mithilfe von Streudiagrammen lassen sich zum Beispiel die Streuung der Daten wahrnehmen, erste Eindrücke von möglichen Zusammenhängen erkennen, sowie Ausreißer identifizieren. 
+
+Der Befehl zur Erstellung des Streudiagramms im Basic-Paket von R lautet **plot()**. Im Folgenden werden das Alter und die Socialmedianutzung (in Minuten) der Studierenden im Datensatz angezeigt. Es lässt sich direkt ein Ausreißer identifizieren: (Mindestens) Eine Person ist deutlich älter als der Rest, der insgesamt eher altershomogen ist. Die durchschnittliche Socialmedianutzung scheint stärker zu streuen. Auf den ersten Blick lässt sich in der Punktwolke kein Zusammenhang zwischen Alter und Socialmedianutzung erkennen. 
+
+```{r}
+plot(Studis$Alter, Studis$Socialmedia)
+```
+\newpage  +
+
+Im Folgenden soll es allerdings weniger um die Interpretation gehen als vielmehr um die Gestaltung des Diagramms. Analog zum Balkendiagramm oben lassen beispielsweise die Beschriftungen ändern: 
+
+```{r}
+plot(Studis$Alter, Studis$Socialmedia, 
+     xlab = "Alter", ylab = "Socialmedianutzung in Minuten", 
+     main = "Streudiagramm")
+```
+
+Desweiteren lassen sich die Farbe, Form und Größe der Datenpunkte verändern. Das Argument *"pch ="* dient dabei zur Definition der Form. Die folgende Abbildung zeigt die Formen und dazugehörigen Ziffern, die dem Argument eingefügt werden können: 
+
+```{r echo=FALSE, warning=FALSE}
+grid <- expand.grid(1:5, 6:1)
+plot(grid, pch = 0:30, cex = 2.5,
+     yaxt = "n", xaxt = "n",
+     ann = FALSE, xlim = c(0.5, 5.25),
+     ylim = c(0.5, 6.5))
+
+grid2 <- expand.grid(seq(0.6, 4.6, 1), 6:1)
+text(grid2$Var1[1:26], grid2$Var2[1:26], 0:25)
+```
+\newpage  
+
+Im Beispiel könnte es dann also wie folgt aussehen:
+
+```{r}
+plot(Studis$Alter, Studis$Socialmedia, 
+     xlab = "Alter", ylab = "Socialmedianutzung in Minuten", 
+     main = "Streudiagramm",
+     col = "steelblue", pch = 16, cex = 2)
+```
+\newpage
+Auch kann es hilfreich sein, den Wertebereich der Achsen manuell einzustellen. Das lässt sich mit den Argumenten *"xlim ="* für die x-Achse und *"ylim ="* für die y-Achse lösen. Das folgende Beispiel verändert den Wertebereich der x-Achse: 
+
+```{r}
+plot(Studis$Alter, Studis$Socialmedia, 
+     xlab = "Alter", ylab = "Socialmedianutzung in Minuten", 
+     main = "Streudiagramm",
+     col = "steelblue", pch = 16, cex = 1.5,
+     xlim = c(0,80))
+```
+\newpage  
+
+## Histogramm
+
+Das Histogramm sieht dem Balkendiagramm auf den ersten Blick sehr ähnlich, hat aber einige Besonderheiten. Es dient in erster Linie dazu, die Häufigkeitsverteilung einer i.d.R. metrischen Variable darzustellen.  
+Die Funktion zur Erstellung lautet **hist()**. Das Beispiel zeigt das Histogramm für die Socialmedianutzung und fügt direkt schon die bekannten Argumente zur Achsenbeschriftung und Farbgebung ein. 
+
+```{r}
+hist(Studis$Socialmedia, 
+     main = "Histogramm Social Media Nutzung", 
+     xlab = "Social Media Nutzung in Minuten", ylab = "Häufigkeit",
+     col = "plum3")
+```
+\newpage
+Mit dem Argument *"breaks ="* lassen sich die Abstände der Balken verändern. Wenn wir wissen, dass sich die Werte etwa zwischen 0 und 150 befinden, scheint es angemessen, 15 Gruppen zu bilden, sodass ein Balken jeweils einen 10er Schritt abdeckt: 
+
+```{r}
+hist(Studis$Socialmedia, 
+     main = "Histogramm Social Media Nutzung", 
+     xlab = "Social Media Nutzung in Minuten", ylab = "Häufigkeit",
+     col = "plum3",
+     breaks = 15)
+```
+
+\newpage
+Das sieht schon ganz gut aus, allerdings ist es ein Problem, dass nicht jeder Balken eine eigene Beschriftung hat, sodass beispielsweise nicht zu erkennen ist, in welchen Wertebereichen offenbar keine Fälle liegen (dort wo keine Balken sind). Im nächsten Schritt entfernen wir deshalb erst die Beschriftung der x-Achse mit dem Argument *"xaxt='n'"*, um dann in der nächsten Zeile die Form der Beschriftung neu zu definieren. Wir geben an, dass wir eine Sequenz von 0 bis 150 in 10er Schritten hinzufügen wollen: 
+
+```{r}
+hist(Studis$Socialmedia, 
+     main = "Histogramm Social Media Nutzung", 
+     xlab = "Social Media Nutzung in Minuten", ylab = "Häufigkeit",
+     col = "plum3", 
+     breaks = 15, xaxt='n')
+axis(side=1, at=seq(0,150, 10))
+```
+\newpage
+## Boxplot
+
+Text zur Erklärung von Boxplots
+
+```{r}
+boxplot(Studis$Socialmedia)
+```
+
+Spannend sind Boxplots vor allem auch, um sich Unterschiede in der Streuung bei unterschiedlichen Gruppen anzuschauen. 
+
+```{r}
+boxplot(Studis$Socialmedia ~ Studis$Abschluss)
+```
+
+Auch hier lassen sich natürlich Beschriftungen und Farben verändern: 
+
+```{r}
+boxplot(Studis$Socialmedia ~ Studis$Abschluss,
+        ylab = "Socialmedianutzung in Minuten",
+        xlab = "Bildungsabschluss",
+        main = "Socialmedianutzung nach Bildungsabschluss",
+        col=c("chartreuse3", "firebrick2", "royalblue3"))
+```
+
+
+## Weitere Merkmale 
+
+Weitere Argumente zum Bearbeiten der Diagramme sind zum Beispiel *"cex.main"* und *"cex.lab"* für die Schriftgrößen der Überschrift und y-Achsentitel. Auch die Schrift lässt sich verändern für die Überschrift *"font.main"*, den Untertitel *"font.sub"* und die Achsen *"font.lab"*, wobei folgende Codes nutzbar sind:   
+1 = normal  
+2 = fett  
+3 = kursiv  
+4 = fett und kursiv  
+5 = griechisch
+
+\newpage
+# Datenbereinigung und -aufarbeitung  
+## Subsets und Filter
+
+Im Kapitel Data Frames wurde bereits angerissen, wie über das Indexing mit eckigen Klammern sowie die Verwendung und Kombination von Bedingungen mithilfe logischer Operatoren Fälle ausgwählt werden können, um sie in einem verkleinerten Data Frame zu speichern. 
+
+Es gibt zwei weitere Möglichkeiten, einen (großen) Datensatz zu verkleinern, um sich auf die für die eigene Analyse wichtigen Aspekte zu konzentrieren und ein Subset zu bilden: 
+(1) Auswahl bestimmter Variablen
+(2) Auswahl bestimmter Fälle
+
+Beide Aufgaben lassen sich sehr effizient mit Funktionen aus dem *"tidyverse"*-Package erledigen. Ein Vorteil der Verwendung der Funktionen aus dem tidyverse-Package ist, dass diese dann auch in Kombination mit dem sogenannten Pipe-Operator verwendet werden können. Dieser wird am Ende des Kapitels eingeführt. 
+
+```{r message=FALSE, warning=FALSE}
+# install.packages("tidyverse")
+library(tidyverse)
+```
+
+
+### Auswahl bestimmter Variablen
+
+Um ein Subset mit einer Auswahl an Variablen zu bilden, kann die Funktion *select()* genutzt werden, wenn die Variable in einer eigenen Spalte angelegt ist. In der select-Funktion wird dann der Datensatz angegeben sowie die auszuwählenden Spalten. 
+
+```{r}
+Studis_klein <- select(Studis, Name, Abschluss)
+print(Studis_klein)
+```
+
+Wenn die aktuell nicht benötigten Variablen beibehalten werden sollen, kann mit dem Argument *"everything"* dafür gesorgt werden, dass die restlichen Variablen hintenangestellt werden: 
+
+```{r}
+Studis_umgeordnet <- select(Studis, Name, Abschluss, everything())
+print(Studis_umgeordnet)
+```
+
+
+### Auswahl von Fällen (Filter-Funktion)
+
+Zur Auswahl von bestimmten Fällen gibt es im tidyverse-Packet die Funktion *filter()*, die mithilfe logischer Operatoren verwendet werden kann. 
+
+
+```{r}
+filter(Studis, Haarfarbe == "schwarz") #  genau gleich
+filter(Studis, Haarfarbe != "schwarz") #  ungleich
+filter(Studis, Alter < 20) # kleiner als
+filter(Studis, Alter > 27) # größer als
+filter(Studis, Größe <= 175) # kleiner gleich
+filter(Studis, Größe >= 180) # größer gleich
+
+```
+
+Mit den Operatoren *&* ("und") sowie *|* ("oder") lassen sich Bedingungen auch verknüpfen.
+
+```{r}
+filter(Studis, Haarfarbe == "schwarz" & Geschlecht == "w") # und
+filter(Studis, Größe <=160 | Größe >= 190) # oder 
+```
+
+
+## Fehlende Werte
+
+Fehlende Werte zu identifizieren in einem Datensatz ist ein wichtiger Arbeitsschritt, bevor mit der eigentlichen Datenbereinigung begonnen werden kann. Denn fehlende Werte können zu Problemen führen. 
+Die folgenden Beispiele beziehen sich auf den Studis-Datensatz, dem allerdings einige fehlende Werte beigemischt worden sind. 
+
+
+```{r}
+#Datensatz mit fehlenden Werten bei Haarfarbe und Socialmedianutzung
+Studis.na <- read.csv2("Studis_na.csv") 
+```
+
+Soll nun die durchschnittliche Socialmedianutzung berechnet werden, gibt es ein Problem: 
+
+```{r}
+mean(Studis.na$Socialmedia)
+```
+
+Das Problem kann behoben werden, indem das Argument *"na.rm = TRUE"* in die Funktion aufgenommen wird.
+
+```{r}
+mean(Studis.na$Socialmedia, na.rm = TRUE)
+```
+
+Jeder Datensatz sollte daher auf fehlende Werte überprüft werden. Optimalerweise werden fehlende Werte mit NA im Datensatz gekennzeichnet. 
+
+Enthält der Datensatz also mit NA-gekennzeichnete Werte?
+
+```{r}
+anyNA(Studis.na)
+```
+
+Als Ausgabe bekommen wir "TRUE" angegeben, also enthält der Datensatz fehlende Werte. Aber wo nur?
+```{r}
+is.na(Studis.na)
+```
+
+Überall dort, wo TRUE als Wert verzeichnet ist, gibt es also offenbar einen fehlenden Wert. Die Übersicht ist allerdings maximal unübersichtlich. Mit dem folgenden Befehl ist auf den ersten Blick ersichtlich, bei welchen Variablen wie viele NAs zu finden sind: 
+
+```{r}
+colSums(is.na(Studis.na))
+```
+
+Die Gesamtzahl der fehlenden Werte im Datensatz oder bei einer Variablen lässt sich auch mit der table-Funktion abzeigen. 
+
+```{r}
+table(is.na(Studis.na))
+table(is.na(Studis.na$Socialmedianutzung))
+```
+
+Allerdings sind fehlende Werte nicht immer einheitlich mit NA gekennzeichnet. Manchmal wird bei der Erstellung eines Datensatzes ein Wert wie "-99" oder ähnliches verwendet. Darum sollte man sich immer auch die deskriptive Statistik einer Variablen anschauen, im Beispiel für die Haarfarbe:
+
+```{r}
+table(Studis.na$Haarfarbe)
+```
+
+Wir wissen aus der Übersicht oben, dass die Haarfarbe einen mit NA gekennzeichneten Wert hat. Dieser wird wiederum mit der table-Funktion nicht angezeigt. Aber wir sehen, dass es einen Wert mit "-99" bei der Variablen Haarfarbe gibt, der offenbar auch einen fehlenden Wert markiert. Die Bezeichnung fehlender Werte sollte natürlich einheitlich sein, weshalb die "-99" auch in NA umgewandelt werden sollten: 
+
+```{r}
+Studis.na$Haarfarbe[Studis.na$Haarfarbe == -99] <- NA
+table(is.na(Studis.na$Haarfarbe))
+```
+
+Ist bekannt, dass im gesamten Datensatz ein anderer Wert als NA zur Kennzeichnung fehlender Werte genutzt worden ist, lässt sich dieses Problem auch in einem Schritt beheben, wie das folgende Code-Beispiel zeigt.  
+
+```{r}
+Studis.na[Studis.na == -99] <- NA
+```
+
+
+Eine andere Variante wäre es, die mit NA gekennzeichneten Werte durch einen inhaltlichen Wert zu ersetzen (dann taucht der Wert auch in der Übersicht mit der table-Funktion auf), zum Beispiel wie folgt:
+
+```{r}
+Studis.na$Haarfarbe[is.na(Studis.na$Haarfarbe)] <- "unbekannt"
+table(Studis.na$Haarfarbe)
+```
+
+Bei nummerischen Werten ist es auch denkbar, die fehlenden Werte durch den Durchschnitt oder den Median aller Werte der jeweiligen Variablen zu ersetzen. Ein solcher Schritt sollte gut abgewogen werden, denn er hat beispielsweise Auswirkungen auf die Streuung der Gesamtvariablen (die dadurch kleiner wird).
+
+```{r}
+Studis.na$Socialmedianutzung[is.na(Studis.na$Socialmedianutzung)] <- mean(Studis.na$Socialmedianutzung, na.rm = TRUE)
+print(Studis.na$Socialmedianutzung)
+```
+
+Analog würde für den Median der Befehl "median(Studis.na$Socialmedianutzung, na.rm = TRUE)" genutzt werden können. 
+
+## Berechnung neuer Variablen
+
+Mit der Funktion **mutate()** lassen sich aus bzw. mit bestehenden Variablen neue Variablen berechnen. Damit können zum Beispiel auch Umrechnungen vorgenommen werden. Im Beispiel wird die in cm angegebene Größe der Studierenden in feet umgerechnet (wobei 1 feet = 30,48 cm).
+(Für die exemplarische Darstellung wird im Folgenden nur noch ein Subset aus den ersten fünf Fällen angezeigt.)
+
+```{r}
+Studis <- mutate(Studis, feet = Größe/30.48)
+print(Studis[c(1:5),])
+```
+
+Hinweis: Die Funktion **transmute()** berechnet eine neue Variable, ohne die alten Variablen im Datensatz zu behalten. 
+
+## Umkodieren in eine andere Variable
+
+Neben der Berechnung neuer Variablen ist auch das Umkodieren bestehender Variablen eine häufig genutzte Operation. Variablen umkodieren kann nötig werden, wenn Variablen nicht in der erwünschten Form vorliegen. Das folgende Beispiel zeigt die Dichotomisierung der metrisch-skalierten Variablen "Socialmedia". Ziel soll es sein, eine nominale Variable mit zwei Ausprägungen zu erstellen: gering (für Socialmedianutzung unter 30min) und hoch (für Socialmedianutzung über 30min). Dafür wird die Funktion **recode()** aus dem car-Package genutzt.  
+(Achtung: weil es in einem anderen Package ebenfalls einen recode-Befehl gibt, kann es hier zu Problemen kommen. Um R mitzuteilen, welcher Befehl genutzt werden soll, wird vor der recode-Funktion noch der Zusatz "car::" angefüht. Diese Schreibweise mit den zwei Doppelpunkten verweist auf das zu nutzende Package.)
+
+```{r}
+library(car)
+```
+
+```{r echo=TRUE}
+Studis$socialm_kat <- car::recode(Studis$Socialmedia, "lo:30 = 1; 31:hi = 2") 
+print(Studis)
+```
+
+
+## Werte der Größe nach ordnen 
+
+Mit der Funktion **arrange()** lassen sich Variablenwerte der Größe nach ordnen. In der default-Variante beginnend mit dem kleinsten Wert, mit dem Zusatzargument *"desc()"* beginnend mit dem größten Wert. Die Sortierung nach der Größe von Variablen kann zum Beispiel dazu dienen, die Fälle mit den kleinsten und größten Werten zu identifizieren und ggf. auch Extremwerte/ Ausreißer zu erkennen. 
+
+```{r}
+arrange(Studis, Alter)
+arrange(Studis, desc(Alter))
+```
+
+## Umordnen des Datensatzes
+
+Bei der klassischen Datentabelle stellt jede Zeile einen eigenen Fall da, jede Spalte eine Variable. Beim Studis-Datensatz ist das der Fall. Je nach Art der Analyse kann es aber auch sein, dass ein anderes Format benötigt wird. In den folgenden Schritten werden Möglichkeiten gezeigt zur Reorganisation eines Datensatzes. 
+
+Zur Veranschaulichung der nächsten Schritte wird der Datensatz um zwei weitere Variablen erweitert. Stellen wir uns vor, die Studierenden sollten an zwei aufeinanderfolgenden Tagen notieren, wie viele Tassen Kaffee sie getrunken haben.   
+(Zur Vereinfachung werden im Folgenden zufällige Werte zwischen 0 und 6 zu jedem Fall zugeordnet mit der Funktion **sample()**. Die Argumente lesen sich wie folgt: Ziehe eine Zahl zwischen 0 und 6. Das wiederhole 26 Mal. Damit das auch klappt, lege die bereits gezogene Zahl wieder zurück, sonst reichen die Ziffern von 0 bis 6 nicht, um 26 Zahlen zu ziehen. Weil R diese Zufallsziehung bei jeder Ausführung neu wiederholen würde und damit immer neue Kombinationen von Zufallszahlen entstehen, was sich auf unten folgende Berechnungen auswirken würde, wird die Funktion **set.seed()** vorangestellt, die die Zufallszahlen festschreibt. Die Zahl als Argument in der set.seed Funktion kann willkürlich gesetzt werden.)
+
+```{r}
+set.seed(1)
+day1_coff <- sample(c(0:6), 26, replace = TRUE)
+set.seed(2)
+day2_coff <- sample(c(0:6), 26, replace = TRUE)
+Studis <- cbind(Studis, day1_coff, day2_coff)
+print(Studis[c(1:5),])
+
+```
+
+Weil wir nur die Kaffee-Variablen brauchen, wird der Datensatz zur besseren Weiterverarbeitung verkleinert: 
+
+```{r}
+Studis_coff <- select(Studis, Name, day1_coff, day2_coff)
+print(Studis_coff[c(1:5),])
+```
+
+```{r}
+Studis_coff_rearrange <- gather(Studis_coff, day1_coff:day2_coff, key = "day",
+                                value = "cups")
+print(Studis_coff_rearrange)
+```
+
+Die Funktion **pivot_longer()** macht im Prinzip das gleiche, ordnet die Werte dann aber anders: 
+
+```{r}
+Studis_coff_rearrange2 <- pivot_longer(Studis_coff, day1_coff:day2_coff, 
+                                       names_to = "day", values_to = "cups")
+print(Studis_coff_rearrange2[c(1:6), ])
+```
+
+Diese Art der Darstellung ermöglicht es beispielsweise, die Tagesdurchschnitte einfacher zu vergleichen. Eine beliebte Variante, Vergleiche vorzunehmen, ist durch Kombination der Funktionen **group_by()** und **summarize()**: 
+
+```{r}
+Studis_coff_rearrange <- group_by(Studis_coff_rearrange, day)
+summarize(Studis_coff_rearrange, mean(cups))
+```
+
+Liegt der Datensatz in diesem langen Format vor, aber man braucht ihn im klassischen Format mit den Fällen pro Zeile, kann die Funktion **pivot_wider()** genutzt werden:
+
+```{r}
+Studis_coff_rearrange_back <- pivot_wider(Studis_coff_rearrange, names_from = day, values_from = cups)
+print(Studis_coff_rearrange_back[c(1:6), ])
+```
+
+Die Ausgangslage ist wieder hergestellt.   
+Eine weitere Funktion aus dem tidyverse-Package (um genauer zu sein: aus dem dplyr-Package, das Teil des übergeordneten tidyverse-Package ist), kann bei der Datenaufbereitung sehr hilfreich sein: die Funktion **separate(df, into = )** kann eine Variable, die mehr als eine Information enthält, in mehrere Variablen auftrennen. 
+
+Zur besseren Veranschaulichung werden zwei weitere fiktive Variablen angelegt, nach dem gleichen Muster wie oben. Nehmen wir an, die Studierenden sollten für die beiden Tage nicht nur ihren Kaffeekonsum sondern auch ihren Schlaf protokollieren. Die beiden Variablen stellen also Schlaf in Stunden für den jeweiligen Tag da:
+
+```{r}
+day1_sleep <- sample(c(2:12), 26, replace = TRUE)
+day2_sleep <- sample(c(2:12), 26, replace = TRUE)
+Studis <- cbind(Studis, day1_sleep, day2_sleep)
+Studis_sleep <- select(Studis, Name, day1_coff:day2_sleep) 
+Studis_sleep_long <- pivot_longer(Studis_sleep, cols = day1_coff:day2_sleep, names_to = "day", values_to = "value")
+print(Studis_sleep_long[c(1:10),])
+```
+In der Variable "day" stecken in dieser Darstellung nun zwei Informationen, nämlich zum Tag 1 oder 2 sowie zu Kaffee und Schlaf. Mit der Funktion separate, können diese Informationen in eigenen Variablen gespeichert werden: 
+
+```{r}
+Studis_sleep_long_sep <- separate(Studis_sleep_long, day, into = c("day", "condition"))
+print(Studis_sleep_long_sep[c(1:10),])
+```
+
+Das ist schon besser im Hinblick auf die Konvention, dass eine Variable nur eine Information enthalten sollte. Allerdings haben wir nun noch das Problem, dass die Werte in der Spalte "Value" gar nicht die selbe Maßeinheit haben. Kaffee wird in "Tassen" angegeben, Schlaf in "Stunden". Darum sollen die Werte für Kaffee und Schlaf nun auch noch in eigene Variablen gespeichert werden. Im Beispiel wird dies mit der Funktion **spread(df, key = , value =)** gemacht, die das Gegenstück zur gather-Funktion von oben darstellt. Es könnte auch pivot_wider() genutzt werden. 
+
+```{r}
+Studis_sleep_long_sep_spread <- spread(Studis_sleep_long_sep, key = condition, value = value)
+print(Studis_sleep_long_sep_spread[c(1:10),])
+```
+
+Dahin zu kommen, war nun etwas umständlich (im folgenden Abschnitt wird ein Weg behandelt, die Schritte effizienter durchzuführen), zum Zwecke der Veranschaulichung der einzelnen Funktionen aber nötig. Mit dem Ergebnis lässt sich jetzt immerhin arbeiten. So könnte zum Beispiel der Zusammenhang (die Korrelation, siehe Abschnitt XY) zwischen Kaffeekonsum und Schlaf berechnet werden: 
+
+```{r}
+cor.test(Studis_sleep_long_sep_spread$coff, Studis_sleep_long_sep_spread$sleep)
+```
+
+Auch können beide Variablen zum Beispiel in einem Streudiagramm angezeigt werden: 
+
+```{r}
+plot(Studis_sleep_long_sep_spread$coff, Studis_sleep_long_sep_spread$sleep)
+```
+
+## Der Pipe-Operator 
+
+**>%>** - So sieht er aus, der Pipe-Operator aus dem tidyverse-package. Er dient dazu, Code effizienter und übersichtlicher zu gestalten, in dem Verschachtelungen eingespart werden, sparsamer mit der Anlage (dem Zwischespeichern) von Objekten umgegangen wird und insgesamt mehr Übersichtlichkeit durch das nacheinander-Abarbeiten von Schritten hergestellt wird. 
+
+Schauen wir uns ein einfaches Beispiel an, wie wir es bisher kennengelernt haben. Mit der Kombination der group_by() sowie der summarize()-Funktion können wir uns zum Beispiel Gruppenunterschiede hinsichtlich des Mittelwerts anschauen. So können wir uns das Durchschnittsalter für die Geschlechter unseres Studis-Datensatzes anschauen: 
+
+```{r include=FALSE}
+Studis <- read.csv2("Studis.csv")
+```
+
+
+```{r}
+Studis.sex <- group_by(Studis, Geschlecht)
+summarize(Studis.sex, age.avg = mean(Alter))
+```
+
+Mit dem Pipe-Operator lässt sich der Code sparsamer abbilden, weil kein extra Objekt angelegt wird:
+
+```{r}
+Studis %>%
+  group_by(Geschlecht) %>% 
+  summarize(age.avg = mean(Alter))
+```
+
+In der ersten Code-Zeile wird dabei für alle folgenden Zeilen der Dataframe definiert, auf den sich die Berechnungen beziegen sollen. Es folgt der Pipe-Operator. Wird anschließend abgeentert, wird die nächste Zeile automatisch eingerückt. Das sorgt für Übersichtlichkeit. Für den folgenden Befehl muss den Dataframe nicht erneut nennen, sondern nur die Variable(n) und ggf. die auszuführenden Argumente. Mehrere Funktionen nacheinander  durch den Pipe-Operator verbunden, werden wie ein Koch-Rezept Schritt für Schritt ausgeführt.  
+
+Erinnern wir uns an den etwas umständlichen Code aus dem vorherigen Abschnitt, um zum Schluss die Kaffee- und Schlafvariablen in eine Form zu bekommen, mit der wir beispielsweise eine Streudiagramm anfertigen können. Auf dem Weg zu diesem Ergebnis wurden mehrere Objekte als Zwischenschritte angelegt, die später gar nicht mehr gebraucht werden (nachdem sie für den folgenden Schritt verwendet wurden). Wie angekündigt, lässt sich auch dieser umständliche Code etwas eleganter und vor allem effizienter gestalten: 
+
+```{r}
+Studis_sleep %>%
+  pivot_longer(cols = day1_coff:day2_sleep, names_to = "day", values_to = "value") %>%
+  separate(day, into = c("day", "condition")) %>%
+  spread(key = condition, value = value) %>%
+  print()
+
+```
+
+Die Schritte, wie wir sie oben durchgeführt haben, werden hier nun nacheinander ausgeführt: pivot_longer, separate und spread. Aber ohne unnötig angelegte Zwischenobjekte und auch dadurch deutlich besser nachvollziehbar. 
+
+
+\newpage
+# Mittelwertvergleiche 
+
+Oft interessieren in der Forschung Unterschiede zwischen Gruppen, zum Beispiel ob sich zwei Gruppen hinsichtlich ihres für eine Variable ermittelten Mittelwertes unterscheiden. Es werden dafür zwei Arten von Tests unterschieden: die parametrischen Tests sowie die nicht-parametrischen Test. Welche Art von Test zu wählen ist, hängt von der Erfüllung bestimmter Voraussetzungen ab, die im Vorhinein zu testen sind. Auch die Art der Gruppen für den Vergleich spielt eine wichtige Rolle, je nachdem ob es sich bei den Gruppen um abhängige oder unabhängige Stichproben handelt, sind unterschiedliche Tests zu wählen. Abhängig sind Stichproben zum Beispiel dann, wenn es sich um dieselbe Gruppe von Fällen handelt, die zu unterschiedlichen Zeitpunkten untersucht worden sind, beispielsweise Personen, die mehrfach befragt worden sind. Unabhängige Stichproben können zum Beispiel zwei Gruppen innerhalb einer Untersuchung sein, zum Beispiel Personen mit unterschiedlichem Geschlecht innerhalb einer Befragung. 
+
+## Parametrische Tests
+
+Für die parametrischen Tests müssen drei Voraussetzungen erfüllt sein, die im Vorfeld der eigentlichen Analyse überprüft werden müssen:
+(1) Die abhängige Variable ist metrisch skaliert.
+(2) Es liegt Normalverteilung (bei der abhängigen Variablen) vor.
+(3) Das Kriterium der Varianzhomogenität ist erfüllt. 
+
+### Prüfung der Voraussetzungen
+
+Ob eine Variable metrisch skaliert ist, sollte sich beim Blick auf die Ausprägungen der Werte erkennen lassen. Das lässt sich zum Beispiel mit der **table()** Funktion überprüfen. Die Prüfung der anderen beiden Voraussetzungen ist etwas aufwendiger. 
+
+#### Test auf Normalverteilung
+
+Eine Möglichkeit, um auf Normalverteilung zu testen, ist die Durchführung des Shapiro-Wilk-Test. Dieser eignet sich auch für kleinere Stichproben (während beispielsweise der Chi-Quadrat-Test nur für größere Stichproben geeignet ist). Die Nullhypothese für den Shapiro-Wilk-Test lautet: Normalverteilung liegt vor. Für das Beispiel überprüfen wir die Normalverteilung der Variablen zur Social Media Nutzung. Es bietet sich in der Regel an, auch ein Histogramm zu erstellen, um einen visuellen Eindruck von der Verteilung zu bekommen. Dazu wird im folgenden das Histogramm für die Socialmedianutzung mit der Verteilungskurve dargestellt.  
+(Da der Beispieldatensatz recht klein ist, ist die Visualisierung nur bedingt aussagekräftig. Nichtsdestotrotz soll sie hier noch mal gezeigt werden, insbesondere um die Funktion vorzuführen, mit der die Normalverteilungskurve über das Histogramm gelegt werden kann.  
+Zur besseren Lesbarkeit wird die Variable im ersten Schritt als x festgelegt. Die Sequenz für die Darstellung der X-Achse als x2 definiert. Beide Werte werden dann für die Funktion **dnorm()** benötigt, die mithilfe von Mittelwert und Standardabweichung die Verteilungskurve definiert. Für das Histogramm muss dann das Argument "prob = TRUE" gesetzt werden. Das Einzeichnen der Kurve mit den vorher festgesetzen Parametern findet im letzten Schritt mit der Funktion **lines()** statt.)
+
+
+```{r}
+x = Studis$Socialmedia
+x2 <- seq(min(x), max(x), length = 10)
+fun <- dnorm(x2, mean = mean(x), sd = sd(x))
+
+hist(x, prob = TRUE,
+     main = "Histogramm Social Media Nutzung", 
+     xlab = "Social Media Nutzung in Minuten", ylab = "Density",
+     col = "white", 
+     breaks = 15, xaxt='n')
+lines(x2, fun, col = 2, lwd = 2) 
+```
+
+Nun wird der Shapiro-Wilk-Test durchgeführt. Die Variable x ist im Schritt oben ja bereits für die Socialmedianutzung definiert worden, daher kann hier damit weiter gearbeitet werden:
+
+```{r}
+shapiro.test(x) 
+
+```
+
+Das Ergebnis gibt einen p-Wert von 0.3056 aus. Es liegt also ein nicht-signifikantes Ergebnis vor. Wir erinnern uns: Die Nullhypothese des Shapiro-Wilk-Test lautet, dass Normalverteilung vorliegt. Bei einem nicht-signifikanten p-Wert kann die Nullhypothese nicht verworfen werden. Entsprechend kann hier Normalverteilung angenommen werden. Die Voraussetzung ist also erfüllt. 
+
+Zum Vergleich soll noch das Alter betrachtet werden: 
+
+```{r}
+shapiro.test(Studis$Alter) 
+```
+
+Der Wert ist sehr klein, entsprechend muss die Nullhypothese  verworfen werden und es kann keine Normalverteilung angenommen werden. Das ergibt auch Sinn, da die Gruppe von Studierenden bis auf einen Ausreißer eher homogen ist in Bezug auf das Alter. 
+
+#### Test auf Varianzhomogenität
+
+Bei der Varianz handelt es sich um die quadrierte Standardabweichung. Beide Werte sind wichtige Maße für die Streuung der Daten, also der durchschnittlichen Abweichung der Datenpunkte vom Mittelwert. Wenn wir von Varianzhomogenität sprechen, dann soll also die Streuung der Daten möglichst ähnlich sein. Dabei ist erstmal nicht wichtig, ob die Streuung groß oder klein sein, sie muss nur ähnlich sein für die Gruppen, die verglichen werden sollen. 
+
+Für das Beispiel soll die Socialmedianutzung zwischen männlichen und weiblichen Studierenden im Datensatz verglichen werden. Weil wir noch ein drittes Geschlecht im Datensatz haben, muss zuerst ein Filter gesetzt werden, um ein Subset anzulegen: 
+
+```{r}
+Studis.2Geschl <- filter(Studis, Geschlecht != "d")
+```
+
+Anschließend können wir mit der **describeBy()**-Funktion aus dem *"psych"*-Package die deskriptiven Statistiken betrachten und mit Blick auf die Standardabweichungen schon einen ersten Eindruck bekommen, wie ähnlich diese bei den beiden Gruppen sind: 
+
+```{r}
+library(psych)
+describeBy(Studis.2Geschl$Socialmedia, Studis.2Geschl$Geschlecht)
+```
+
+Mit 35.33 und 38.45 sind die Standardabweichungen der Gruppen nicht allzuweit auseinander. Das gibt einen ersten Hinweis auf Varianzhomogenität. Diese wird nun noch mit dem Levene-Test konkret überprüft. Dazu nutzen wir die Funktion **leveneTest()** aus dem *"car"*-Package. Die Nullhypthese des Levene-Test ist die Annahme der Varianzhomogenität. 
+
+```{r warning=FALSE}
+leveneTest(Studis.2Geschl$Socialmedia, Studis.2Geschl$Geschlecht, center = mean)
+```
+
+Der p-Wert des Tests ist nicht-signifikant mit 0.8832, entsprechend kann die Nullhypothese nicht verworfen werden und es kann Varianzhomogenität angenommen werden. 
+
+### t-Test für unabhängige Stichproben (2 Gruppen)
+
+Sind die Voraussetzungen erfüllt, kann für unabhängige Stichproben anschließend ein t-Test durchgeführt werden mit der Funktion **t.test()**. Die Nullhypothese des t-Tests lautet: Die Gruppen unterscheiden sich nicht (bzw. es gibt keinen von Null verschiedenen Unterschied). Das Beispiel zeigt den t-Test für die Socialmedianutzung bei den männlichen und weiblichen Studierenden. (Zu beachten ist die Verbindung der beiden Variablen in der Funktion durch das Tilde-Zeichen "~") 
+
+```{r}
+t.test(Studis.2Geschl$Socialmedia ~ Studis.2Geschl$Geschlecht)
+```
+
+Der Output gibt die Mittelwerte für beide Gruppen an, sowie die t-Statistik, die Freiheitsgrade und den p-Wert. Die Unterschiede im Mittelwert scheinen auf den ersten Blick recht groß, der p-Wert ist jedoch nicht signifikant, entsprechend kann kein signifikanter Unterschied bei den Gruppen angenommen werden. Das heißt, wäre unser Datensatz eine Stichprobe aus einer größeren Gruppe von Studierenden könnten wir anhand dieser Stichprobe nicht schließen, dass es in der Grundgesamtheit einen von Null verschiedenen Unterschied zwischen den beiden Gruppen bei ihrer Socialmedianutzungsdauer gibt. 
+
+
+### t-Test für abhängige Stichproben 
+
+Sollen beispielsweise die Werte einer Gruppe zu unterschiedlichen Messzeitpunten auf Veränderung geprüft werden, kann - bei gegebenen Voraussetzungen - der t-Test für unabhängige Stichproben(oder auch: verbundene Stichproben) verwenden werden. Im Beispiel soll überprüft werden, ob sich der Kaffeekonsum von Tag 1 und Tag 2 bei unseren Beispielstudierenden unterscheidet. Die Voraussetzungen sind gegeben, sodass der Test wie folgt durchgeführt werden kann. Die zu nutzende Funktion ist ebenfalls **t.test()** mit dem Unterschied, dass nun das Argument *"paired = TRUE"* eingefügt wird, um deutlich zu machen, dass es sich um verbundene Stichproben handelt:  
+
+```{r}
+t.test(Studis_coff$day1_coff, Studis_coff$day2_coff, paired = TRUE)
+```
+
+Die Nullhypothese lautet, dass es keinen Unterschied (bzw. keinen von Null verschiedenen Unterschied) zwischen den Gruppen gibt. Der oben angegebene p-Wert übersteigt die Grenze von 0.05, sodass die Nullhypothese nicht verworfen werden kann. Es liegt kein signifikanter Unterschied zwischen dem Kaffeekonsum an Tag 1 und Tag 2 vor. 
+
+### Einfaktorielle Varianzanalyse (ANOVA) für unabhängige Stichproben 
+
+Sollen mehr als zwei Gruppen verglichen werden, kann eine einfaktorielle Varianzanalyse durchgeführt werden, wenn die entsprechenden Voraussetzungen erfüllt sind. Für das folgende Beispiel soll die Socialmedianutzung verglichen werden für die drei unterschiedliche Gruppen nach Bildungsabschluss (Abi, BA und MA). Der Beispieldatensatz ist sehr klein, weshalb alle folgenden Schritte rein der Illustration der Durchführung dienen sollen und die tatsächlichen Werte weniger relevant sind. 
+Zur Prüfung auf Normalverteilung bei mehr als zwei Gruppen bietet es sich an eine Funktion aus der Familie der apply-Funktionen zu wählen. **tapply()** führt eine (in den Argumenten definierte) Funktion für alle angegebenen Gruppen aus. In diesem Fall wird also der Shapiro-Wilk-Test für die Socialmedianutzung der drei zu vergleichenden Gruppen ausgeführt. 
+
+
+```{r}
+tapply(Studis$Socialmedia, Studis$Abschluss, FUN = shapiro.test)
+
+```
+
+Für alle drei Gruppen ergeben sich p-Werte, die größer sind als 0.05, also kann die Nullhypothese (H0 = Normalverteilung liegt vor) nicht verworfen werden. 
+
+Der Levene-Test auf Varianzhomogenität kann auch für drei Gruppen durchgeführt werden: 
+
+```{r}
+leveneTest(Studis$Socialmedia, Studis$Abschluss, center = "mean")
+```
+
+Der p-Wert ist in diesem Beispiel 0.05, also gerade an der üblichen Grenze, aber für unser Beispiel akzeptabel, sodass als nächstes das Modell für die ANOVA spezifiert werden kann. Das heißt, dass mit der Funktion **aov()** die Berechnung durchgeführt wird und das Ergebnis in ein Objekt gespeichert wird. Anschließend wird das Ergebnis mit der **summary()** Funktion aufgerufen. 
+
+```{r}
+model  <- aov(Studis$Socialmedia ~ Studis$Abschluss)
+summary(model)
+```
+
+Der Blick auf den p-Wert zeigt hier kein signifikanten Unterschied. Wäre der p-Wert kleiner als 0.05, müsste ein post-hoc Test durchgeführt werden mit der Funktion **pairwise.t.test()**, um zu überprüfen, zwischen welchen Gruppen der signifikante Unterschied konret besteht. Denn es kann sein, dass sich nur bestimmte Gruppen voneinader unterscheiden, aber nicht alle. Zur Illustration wird der post-hoc Test hier trotzdem gezeigt. Mit dem Argument *"p.adjust.method ="* kann die Methode für den Vergleich gewählt werden. Es gibt unterschiedliche Möglichkeiten, die je nach Daten abgewogen werden sollte (Kriterien sind Gruppengrößen und Varianzheterogenität). Für das Beispiel wird die Methode nach Bonferroni gewählt, die als sehr konservativ, d.h. sehr streng bei der Erreichung von Signifikanzwerten, gilt.
+
+```{r}
+pairwise.t.test(Studis$Socialmedia, Studis$Abschluss, p.adjust.method = "bonferroni")
+```
+Für jeden Kombination der Gruppen wird hier ein eigener p-Wert angegeben. Dabei kann es - wie gesagt - sein, dass es zwischen manchen Gruppen einen signifikanten Unterschied gibt, zwischen anderen aber nicht. 
+
+## Nicht-parametrische Tests
+
+Wenn die Voraussetzungen für die Annahme der Normalverteilung und Varianzhomogenität nicht erfüllt sind, können die nicht-parametrischen Tests als Alternative genutzt werden. Für zwei verbundene Stichproben würde man dann den Wilcoxon-Test nehmen mit der Funktion **wilcox.test(var1, var2, paired = TRUE)**. Für zwei unverbundene Stichproben dient der Mann-Whitney-U-Test. Die Funktion sieht ähnlich aus mit **wilcox.test(var1~var2)**, wobei "var2" die Gruppierungsvariable darstellt. 
+
+\newpage
+# Korrelationen 
+
+Bei der Betrachtung von Korrelationen geht es um Zusammenhänge zwischen zwei Variablen. Im Studis-Datensatz kann man sich beispielsweise anschauen, ob einen Zusammenhang zwischen Alter und der Dauer der Socialmedianutzung gibt, zum Beispiel die Hypothese prüfend, ob mit zunehmendem Alter mehr oder weniger Socialmedianutzung erfolgt. Zur Exploration von Zusammenhängen bietet es sich in der Regel an, sich ein Streudiagramm der beiden Variablen anzuschauen: 
+
+```{r}
+plot(Studis$Alter, Studis$Socialmedia, xlab = "Alter", ylab = "Social Media Nutzung in Minuten", 
+     main = "Social Media Nutzung und Alter")
+```
+
+Wir sehen eine Punktwolke auf der linken Seite sowie einen Ausreißer einer Person, die offenbar sehr viel älter ist als der Rest und sehr viel weniger Socialmedianutzung hat. Diese grafische Erkenntnis sollte für die folgenden Schritte schon zur Vorsicht raten. 
+
+Eine einfache Korrelation lässt sich mit der Funktion **cor()** errechnen. Die Default-Einstellung zur Methode ist hier: Korrelation nach Pearson für metrisch skallierte Daten. 
+
+```{r}
+cor(Studis$Alter, Studis$Socialmedia)
+```
+
+Der Pearson-Koeffizient reicht von 1 (perfekter positiver Zusammenhang) bis -1 (perfekter negativer Zusammenhang). Das Ergebnis von -0.349 weist also auf einen moderaten negativen Zusammenhang: je älter desto weniger Socialmedianutzung. 
+
+Für die inferenzstatistische Prüfung des Zusammenhangs wird die Funktion **cor.test()** genutzt. 
+
+```{r}
+cor.test(Studis$Alter, Studis$Socialmedia)
+```
+
+Zusätzlich zum Koeffizienten wird uns hier nun auch noch die t-Statistik, die Freiheitsgrade sowie der p-Wert ausgegeben. Der p-Wert liegt in diesem Fall mit 0.08 knapp über der Grenze des Signifikanzniveaus von 0.05. 
+
+Nun hatte die grafische Darstellung aber einen klaren Ausreißer angezeigt, von dem wir ausgehen müssen, dass er bei der kleinen Stichprobengröße einen großen Einfluss aufs Ergebnis hat. Für ein solches Beispiel ergibt es durchaus Sinn, den einzelnen starken Ausreißer auszuschließen. 
+
+```{r}
+young.studis <- filter(Studis, Alter < 60)
+plot(young.studis$Alter, young.studis$Socialmedia)
+cor(young.studis$Alter, young.studis$Socialmedia)
+cor.test(young.studis$Alter, young.studis$Socialmedia)
+```
+
+Die Korrelation ist nun leicht positiv, der p-Wert allerdings ist deutlich größer (bei dieser kleinen Stichprobe aber auch nicht verwunderlich). 
+
+Sind die zu untersuchenden Variablen nicht metrisch, muss die Methode zur Berechnung eines Korrelationskoeffizienten angepasst werden. Die Korrelationskoeffizienten Kendall-Tau und Spearman Rho untersuchen, ob es einen ungerichteten Zusammenhang zwischen zwei ordinalen oder einer ordinalen und einer metrischen Variablen gibt. Sie zeigen entweder einen positiven Zusammenhang, einen negativen Zusammenhang oder gar keinen Zusammenhang. In der Nullhypothese gehen sie von keinem Zusammenhang aus.  
+Für das Beispiel soll der Zusammenhang von Socialmedianutzung und bisherigem Abschluss betrachtet werden. Das geht für den Studis-Datensatz aber nicht ohne weiteres, was an der Anlage der Variablen liegt. 
+
+```{r}
+class(Studis$Abschluss)
+```
+
+Die Abschlussvariable ist nämlich als "character"-Variable hinterlegt und muss in eine ordinale Variable umkodiert werden: 
+
+
+```{r}
+Studis$Abschluss.ord <- factor(Studis$Abschluss, order = TRUE,
+                           levels = c("Abi", "BA", "MA"))
+class(Studis$Abschluss.ord) 
+table(Studis$Abschluss, Studis$Abschluss.ord) 
+```
+
+Das Ergebnis der Funktion **class()** zeigt nun "ordered"/ "factor" an und mithilfe der Kreuztabelle kann kontrolliert werden, ob die Werte korrekt umkodiert worden sind. In der cor-Funktion muss dann die Methode spezifiziert werden. Außerdem muss die unabhängige Variable, die eben in eine ordinale Variable umgewandelt worden ist, noch als nummerisch klassifiziert werden, damit R die Rangfolge der Elemente erstellen kann, die für diesen Test nötig ist. 
+
+
+```{r}
+cor(Studis$Socialmedia, as.numeric(Studis$Abschluss.ord), method = "kendall")
+```
+
+Auch bei der Funktion cor.test() muss die Methode explizit spezifiziert werden: 
+
+```{r}
+cor.test(Studis$Socialmedia, as.numeric(Studis$Abschluss.ord), method = "kendall")
+```
+
+Für den Zusammenhang von nominalen Variablen kann ein Chi-Quadrat-Test gemacht werden, der auf den theoretisch-erwarteten und tatsächlichen Verteilungen in einer Kreuztabelle basiert. Dazu sind allerdings mindestens 5 Beobachtungen pro Zelle nötig, was bei dem kleinen Studis-Datensatz zum Beispiel nicht erreicht werden kann für die dahin enthaltenen Variablen. Die Funktion für den Chi-Quadrat-Test lautet **chisq.test(var1, var2)**. 
+
+# Lineare Regression
+
+Die lineare Regression kommt zur Anwendung, wenn nicht nur ein Interesse an dem Zusammenhang zwischen Merkmalen besteht, sondern es darüber hinaus auch das Ziel ist, aus dem Wissen über den Zusammenhang Vorhersagen machen zu können. Dazu wird die gerichtete Beziehung zwischen zwei Merkmalen betrachtet: der unabhängigen Variablen x und der abhängigen (metrischen) Variablen y. Ziel ist die Verbesserung der Vorhersagequalität von y, wenn die Informationen von x herangezogen werden.
+
+## Pokemon-Beispiel
+
+```{r}
+pok <- read.csv("pokRdex_comma.csv")
+```
+
+
+Wir schauen uns die Variablen attack und defense an. Wir nehmen an, dass Pokemon stärker im Angriff sind, wenn sie auch stark in der Verteidigung sind. Die Punktwolke im Streudiagramm verläuft von links unten nach rechts oben, was einen ersten Hinweis auf einen positiven Zusammenhang zwischen beiden Variablen liefert.
+
+```{r}
+plot(pok$defense, pok$attack)
+```
+
+Nun wird eine Gerade gesucht, die die Punkte möglichst gut repräsentiert, d.h. den kleinst-möglichen Abstand zu allen Punkten hat.
+
+Die Regressiongerade lautet y = a + b*x
+
+- y ist die abhängige Variable  
+- y ist die unabhängige Variable  
+- a ist die Konstante (Schnittpunkt mit der y-Achse, wenn x = 0)  
+- b ist der Regressionskoeffizient (Steigung der Gerade, Erhöhung für y wenn x um 1 steigt)  
+
+Je stärker ein Zusammenhang zwischen der unabhängigen und abhängigen Variable, desto näher liegen die Datenpunkte an der Geraden. 
+De Restabstand zwischen den Datenpunkten und der Geraden wird als **Residuen** bezeichnet. 
+Zur Ermittlung des kleinstmöglichen Abstandes wird die Methode des kleines Quadrate (ordinary least square) verwendet.
+
+Um die Güte einer Regression einschätzen zu können, wird der Determinationskoeffizient **R-Quadrat** betrachtet. Dieser beschreibt den Anteilswert, der die erklärte Varianz in Prozent angibt. Damit gibt er für das Gesamtmodell die Stärke des statistischen Zusammenhangs an: Je näher die Datenpunkte an der Geraden liegen, desto größer ist R-Quadrat. 
+
+Das Lineare Model wird mit der Funktion **lm()** berechnet:
+
+```{r}
+
+model <- lm(pok$attack~pok$defense)
+summary(model)
+```
+
+In diesem Beispiel beträgt der Wert für die Konstante (Intercept) rund 45.04. Der Regressionkoeffizient b beträgt 0.459 und sagt aus, dass die Angriffskraft (y = attack) um 0.459 Punkte steigt, wenn die Verteidigungskraft (x = defense) um einen Punkt steigt. R-Quadrat als Maßzahl für die Güte des Modells beträgt 0.1941, also 19.41 Prozent der Varianz wird mithilfe des Modells erklärt. 
+
+Plot mit Regressionsgerade
+
+
+```{r}
+plot(pok$attack, pok$defense)
+abline(model, col = "red")
+```
+
+
+## Starwars-Beispiel
+
+In einem weiteren Bespiel soll der Zusammenhang von Größe und Gewicht bei den Starwars-Figuren ermittelt werden. Klassischerweise wird die Hypothese zugrunde gelegt, dass größere Figuren auch schwerer sind (und das die Größe Einfluss auf das Gewicht hat und nicht umgekehrt). 
+
+```{r include=FALSE}
+library(dplyr)
+library(car)
+library(ggplot2)
+```
+
+(Der Einfachheit halber wird aber Jabba the Hutt ausgeschlossen, der beim Gewicht einen starken Extremwert darstellt.)
+
+```{r}
+starwars <- read.csv("starwars.csv")
+starwars <- filter(starwars, mass < 1000)
+```
+
+Streudiagramm für Größe und Gewicht: 
+
+```{r}
+plot(starwars$height, starwars$mass)
+```
+
+
+Lineares Model
+
+```{r}
+model_sw <- lm(starwars$mass~starwars$height)
+summary(model_sw)
+```
+Aus dem Output kann entnommen werden, dass das Gewicht um 0.621 kg steigt, wenn die Größe um eine Einheit steigt. R-Quadrat beträgt 57,2 Prozent. Die Größe hat also eine hohe Erklärkraft für das Gewicht bei den Starwars-Figuren. 
+
+## Multiple lineare Regression
+
+Soll der gerichteter Einfluss mehrerer unabhängiger Variablen auf eine abhängige (metrische) Variable betrachtet werden, wird die multiple Regression herangezogen.
+Eine wichtige Grundvoraussetzung dafür ist: Es gibt eine theoretisch begründete Auswahl von Variablen und angenommene Zusammenhänge (Modell). 
+Ziel ist es weiterhin, eine Gerade zu finden, die den kleinst-möglichen Abstand zu allen Datenpunkten hat.
+Die lineare Regressionsgerade der multiplen Regression lautet: 
+
+y = a + b1x1 + b2x2 + … + bnxn
+
+Die Regressionskoeffizienten der einzelnen Variablen (b1 bis bn) sind partielle Regressionskoeffizienten, die unter rechnerischer Kontrolle der anderen UVs zustande kommen.
+
+Um weitere Variablen in das Modell aufzunehmen, werden diese im Code der **lm()** Funktion durch das **+** Zeichen angefügt. Im folgenden Beispiel soll das Geschlecht als weitere Variable aufgenommen werden. Dazu muss diese als character Variable angelegte Variable in eine nummerische dichotome Variable umgewandelt werden. 
+
+### Nominale Variablen  
+Es ist möglich, nominale Variablen in ein lineares Regressionsmodell mit metrischer AV aufzunehmen. Dazu müssen alle Ausprägungen der nominalen Variablen in dichotome Variablen (z.B. 0 = kommt nicht vor; 1 = kommt vor) umgewandelt werden. Es werden dann alle dichotomen Variablen bis auf eine der ursprünglichen Ausprägungen in die Berechnung einbezogen. Die Ausprägung, die nicht in das Modell übernommen wurde, dient bei der Interpretation als Referenz. Alle anderen Ausprägungen der nominalen Variable werden nicht mit ihrem direkten Einflüss auf die AV ausgegeben, sondern sind in Relation zur Referenzkategorie zu interpretiere. Betrachten wir das Beispiel Geschlecht als weitere Variable in einer multiplen Regression.   
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(car)
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+starwars <- read.csv("starwars.csv")
+```
+
+Die Variable "gender" aus dem Starwars-Datensatz wird in einem ersten Schritt dichotomisiert, sodass "masculine" zur Referenzkategorie wird. 
+
+```{r}
+
+starwars$Geschlecht <- car::recode(starwars$gender, "'masculine' = 0; 'feminine' = 1")
+
+```
+
+Wir nehmen an, dass für die Vorhersage des Gewicht der Figuren sowohl ihre Größe als auch ihr Geschlecht relevant sind. 
+
+```{r}
+model2 <- lm(starwars$mass~starwars$height + starwars$Geschlecht)
+summary(model2)
+```
+
+Die Regressionskoeffizienten in diesem Output lassen sich nun wie folgt interpetieren: Wie oben gilt, dass wenn sich die Größe um eine Einheit ändert, sich das Gewicht um 0.61 Einheiten ändert. Die Einheit beim Geschlecht kann sich aber nicht ändern, sodass wir den Koeffizienten bei der Variable Geschlecht wie folgt interpretieren müssen: Im Vergleich zur Referenzkategorie "masculine" sind die Frauen um 22.05 kg leichter. 
+
+### Standardisierte Regressionskoeffizienten
+
+Die hier angegebenen Regressionskoeffizienten sind nicht-standardisierte Regressionskoeffizienten und damit NICHT dimensionslos. Die Einheit der Variable ist ausschlaggebend für die Skalierung der Variable. Es machte also z.B. einen Unterschied, ob die Größe hier in mm, cm, oder m angegeben wäre. Damit sind die Regressionskoeffizienten zwar gut interpretierbar, allerdings untereinander nicht vergleichbar. 
+Die Lösung dieses Problems besteht in der Angabe standardisierter Regressionskoeffizient (= nicht-standardisierter Regressionskoeffizient * (SD UV/ SD AV)) ODER z-Standardisierung der Variablen im Modell. Damit geht zwar die Interpretierbarkeit verloren, allerdings zugunsten der Vergleichbarkeit. Bei der Darstellung der Ergebnisse einer Regression sollten daher immer sowohl die standardsierten als auch nicht-standardisierten Regressionskoeffizienten angebenen werden. 
+Bei R erreichen wir die Ausgabe der standardisierten Regressionskoeffizienten durch z-Standardisierung der Variablen im Modell mit der Funktion **scale()**: 
+
+```{r}
+model3 <- lm(scale(starwars$mass)~scale(starwars$height) + scale(starwars$Geschlecht))
+summary(model3)
+```
+Der Wertebereich der standardisierten Regressionskoeffizienten liegt zwischen -1 und 1. Je näher der Wert an - 1 bzw. 1 herankommt, desto stärker ist der Effekt der unabhänigen Variable auf die abhängige Variable. Damit lässt sich nun entscheiden, welche Variablen um Modell den größeren Einfluss auf die abhängige Variable hat. Im Beispiel ist der Betrag des Koeffizienten der Größe mit rund 0.75 deutlich größer als der Betrag des Wertes der Variable Geschlecht mit 0.28 (Vorzeichen spielt bei der Interpretation der Effektstärke keine Rolle sondern ist nur wichtig für die Richtung des Effekts.).   
+
+\newpage   
+# Faktorenanalyse
+
+Für die Illustration der Faktorenanalyse wird der Worlds of Journalism Germany Datensatz verwerdet. 
+
+
+```{r}
+library(haven)
+
+WJS <- read_sav("WJS_Germany.sav")
+```
+
+Darin gibt es eine Itembatterie zum Thema journalistisches Rollenverständnis. Im ersten Schritt wird aus genau dieser Itembatterie ein Subset gebildet: 
+
+
+```{r}
+C12 <- subset(WJS, select = c(C12A:C12Z))
+describe(C12)
+```
+
+Es werden alle Fälle mit fehlenden Werten entfernt. 
+
+```{r}
+C12 <- na.omit(C12)
+```
+
+Zunächst muss ein weiteres Package installiert und aufgerufen werden, mit dem die Anzahl der Faktoren bestimmt werden kann:  
+
+```{r message=FALSE}
+#install.packages("nFactors")
+library(nFactors)
+```
+
+Die olgende Analyse gibt mehrere Vorschläge nach unterschiedlichen Methoden:  
+-  MAP ( minimum average partial: Analyse der gemeinsamen Varianz in der Korrelationsmatrix)
+-  BIC (Bayesian information criterion)
+
+```{r message=FALSE, warning=FALSE}
+nfactors(C12, rotate = "verimax", fm = "lme")
+```
+
+Es folgt die Parallelanalysemit der Berechnung der Eigenwerte: Summe der quadrierten Faktorladungen und Varianzaufklärung
+
+
+```{r}
+ev <- eigen(cor(C12))
+ap <- parallel(subject= nrow(C12),var=ncol(C12),
+               rep=100,cent=.05)
+nS <- nScree(x=ev$values, aparallel=ap$eigen$qevpea)
+plotnScree(nS)
+```
+
+Maximum Likely Analyse
+
+```{r}
+fit1 <- factanal(C12, factors = 4, rotation = "varimax")
+print(fit1, digits = 3, cutoff=.3)
+```
+
+
+
